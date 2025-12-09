@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'product.dart';
 import 'login.dart'; 
 import 'keranjang.dart';
+import 'pembayaran.dart';
+
 const String LoginRoute = '/';
 const String ProductRoute = '/product';
 const String CartRoute = '/cart'; 
+const String PaymentRoute = '/payment';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +34,8 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginRoute: (context) => const LoginScreen(),
         ProductRoute: (context) => const ProductPage(), 
-        CartRoute: (context) => const CartScreen(), // <-- Daftarkan CartScreen di sini
+        CartRoute: (context) => const CartScreen(), 
+        PaymentRoute: (context) => const PaymentPage(),
       },
     );
   }

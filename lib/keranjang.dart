@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// 👇 TAMBAHKAN: Import ini diperlukan untuk mengakses konstanta PaymentRoute
+import 'main.dart'; 
 
 // --- KONSTANTA WARNA ---
 // Warna Hijau Gelap utama (dari latar belakang login)
@@ -270,7 +272,10 @@ class CartScreen extends StatelessWidget {
 
           // Tombol Checkout
           ElevatedButton(
-            onPressed: () {},
+            // 👇 PERUBAHAN DI SINI: Navigasi menggunakan PaymentRoute
+            onPressed: () {
+              Navigator.pushNamed(context, PaymentRoute);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: accentLightGreen, // Warna Hijau Terang
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
