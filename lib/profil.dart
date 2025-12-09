@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'komponen-navbar.dart'; // <--- PENTING: Import Navbar agar muncul di bawah
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -11,9 +12,11 @@ class ProfilePage extends StatelessWidget {
     final Color darkButton = const Color(0xFF1B3022);    // Hijau gelap tombol Logout
 
     return Scaffold(
-      backgroundColor: darkGreenBg, // Latar belakang utama hijau tua
+      backgroundColor: darkGreenBg, 
+      
+      // --- HEADER APPBAR ---
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Transparan agar menyatu
+        backgroundColor: Colors.transparent, 
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -23,8 +26,10 @@ class ProfilePage extends StatelessWidget {
           "My Profile",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: false, // Judul di kiri (sesuai standar Android/Flutter default kiri, kalau mau tengah set true)
+        centerTitle: false, 
       ),
+
+      // --- BODY ---
       body: Column(
         children: [
           // 1. BAGIAN HEADER (Foto & Tombol Atas)
@@ -41,10 +46,17 @@ class ProfilePage extends StatelessWidget {
                       height: 80,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          // Ganti dengan aset fotomu
-                          image: AssetImage('assets/images/profile_pic.png'), 
+                        color: Colors.white, // Warna dasar jika gambar gagal muat
+                      ),
+                      // Menggunakan ClipOval agar gambar benar-benar bulat
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/profile_pic.png',
                           fit: BoxFit.cover,
+                          // Error Builder: Jika gambar tidak ditemukan, tampilkan ikon orang
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(Icons.person, size: 50, color: Colors.grey.shade400);
+                          },
                         ),
                       ),
                     ),
@@ -67,7 +79,7 @@ class ProfilePage extends StatelessWidget {
                   children: [
                     Expanded(child: _buildHeaderButton("Orders", lightGreenBtn)),
                     const SizedBox(width: 15),
-                    Expanded(child: _buildHeaderButton("Reviews", lightGreenBtn)), // Saya koreksi typo "Riviews" -> "Reviews"
+                    Expanded(child: _buildHeaderButton("Reviews", lightGreenBtn)), 
                   ],
                 ),
               ],
@@ -129,17 +141,21 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20), // Jarak aman bawah
+                  const SizedBox(height: 10), 
                 ],
               ),
             ),
           ),
         ],
       ),
+
+      
+      bottomNavigationBar: const CustomBottomNavBar(
+        indexSelected: 4, 
+      ),
     );
   }
 
-  // WIDGET TOMBOL ATAS (Orders/Reviews)
   Widget _buildHeaderButton(String text, Color color) {
     return ElevatedButton(
       onPressed: () {},
