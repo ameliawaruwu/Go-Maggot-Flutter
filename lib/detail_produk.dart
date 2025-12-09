@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'product.dart'; // Pastikan file ini ada
-import 'keranjang.dart'; // Agar CartRoute dikenali
-import 'main.dart'; 
-import 'chat_produk.dart'; // <--- Import Halaman Chat Produk
+import 'product.dart'; // Pastikan file model Product ada
+import 'keranjang.dart'; // Agar navigasi ke keranjang jalan
+import 'main.dart'; // Agar rute lain dikenali jika perlu
+import 'chat_produk.dart'; // Agar bisa pindah ke halaman chat
+
+// --- KONSTANTA WARNA DARI KERANJANG SAYA ---
+const Color primaryDarkGreen = Color(0xFF385E39); // Hijau Tua (Header)
+const Color accentLightGreen = Color(0xFF6E9E4F); // Hijau Aksen (Tombol)
+const Color lightCardGreen = Color(0xFFE4EDE5);   // Hijau Pucat (Background)
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;
@@ -19,7 +24,7 @@ class ProductDetailPage extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.check_circle, color: Colors.green, size: 50),
+              const Icon(Icons.check_circle, color: primaryDarkGreen, size: 50),
               const SizedBox(height: 10),
               const Text("Berhasil!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               const SizedBox(height: 5),
@@ -29,7 +34,7 @@ class ProductDetailPage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK", style: TextStyle(color: Colors.green)),
+              child: const Text("OK", style: TextStyle(color: primaryDarkGreen)),
             ),
           ],
         );
@@ -39,17 +44,12 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Definisi Warna sesuai Desain Gambar
-    const Color darkGreen = Color(0xFF5F7155); // Hijau tentara (Header & Box Info)
-    const Color lightBg = Color(0xFFE3E9D8);   // Background krem kehijauan
-    const Color btnGreen = Color(0xFF6A9E25);  // Hijau cerah untuk tombol Beli
-
     return Scaffold(
-      backgroundColor: lightBg,
+      backgroundColor: lightCardGreen, // Background Senada dengan Keranjang
       
-      // --- 1. HEADER (AppBar) ---
+      // --- HEADER (APPBAR) ---
       appBar: AppBar(
-        backgroundColor: darkGreen,
+        backgroundColor: primaryDarkGreen, // Hijau Tua
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
@@ -57,7 +57,6 @@ class ProductDetailPage extends StatelessWidget {
         ),
         title: const Text("Kembali", style: TextStyle(color: Colors.white, fontSize: 18)),
         actions: [
-          // --- NAVIGASI KE KERANJANG (Header) ---
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
@@ -67,32 +66,26 @@ class ProductDetailPage extends StatelessWidget {
         ],
       ),
 
-      // --- 2. KONTEN (Body) ---
+      // --- BODY (KONTEN) ---
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 20),
             
-            // Gambar Produk
+            // 1. GAMBAR PRODUK
             Center(
               child: Container(
-                height: 200,
+                height: 220,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.6), // Putih transparan agar gambar pop-out
                   borderRadius: BorderRadius.circular(20),
-                  // Efek bayangan halus di bawah gambar
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    )
-                  ]
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
                     product.imagePath,
-                    height: 200,
                     fit: BoxFit.contain,
                     errorBuilder: (ctx, err, stack) => const Icon(Icons.image_not_supported, size: 80, color: Colors.grey),
                   ),
@@ -102,7 +95,7 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Judul dan Harga
+            // 2. JUDUL DAN HARGA
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
@@ -110,15 +103,15 @@ class ProductDetailPage extends StatelessWidget {
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Serif'),
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Serif', color: Colors.black87),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         product.price,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
                       ),
                       const Text("5Rb Terjual", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
                     ],
@@ -129,12 +122,12 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Kotak Info Hijau (Merk, Stok, Jenis)
+            // 3. KOTAK INFO (Hijau Tua - Agar kontras dengan background pucat)
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: darkGreen, // Warna hijau gelap
+                color: primaryDarkGreen.withOpacity(0.9), // Hijau Tua Transparan dikit
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -148,9 +141,9 @@ class ProductDetailPage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
 
-            // Header Review
+            // 4. HEADER REVIEW
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -158,14 +151,14 @@ class ProductDetailPage extends StatelessWidget {
                   Expanded(child: Container(height: 1, color: Colors.black45)),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Review", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Serif')),
+                    child: Text("Review", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Serif')),
                   ),
                   Expanded(child: Container(height: 1, color: Colors.black45)),
                 ],
               ),
             ),
 
-            // List Review
+            // 5. LIST REVIEW
             _buildReviewItem("Santi", "Produk bersih, packagingnya juga rapih", product.imagePath),
             _buildReviewItem("Sinta", "Produk bersih, packagingnya juga rapih", product.imagePath),
 
@@ -174,13 +167,13 @@ class ProductDetailPage extends StatelessWidget {
         ),
       ),
 
-      // --- 3. BOTTOM BAR (Tombol Aksi) ---
+      // --- BOTTOM BAR (TOMBOL AKSI) ---
       bottomNavigationBar: Container(
-        height: 80, 
+        height: 90, 
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          color: darkGreen,
-          borderRadius: const BorderRadius.only(
+        decoration: const BoxDecoration(
+          color: primaryDarkGreen, // Background Bottom Bar Hijau Tua
+          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
           ),
@@ -188,10 +181,9 @@ class ProductDetailPage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // --- EDIT: TOMBOL CHAT (SUDAH AKTIF) ---
+            // Ikon Chat
             IconButton(
               onPressed: () {
-                // Pindah ke Halaman Chat Produk
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ChatProdukPage()),
@@ -200,29 +192,30 @@ class ProductDetailPage extends StatelessWidget {
               icon: const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 28),
             ),
             
-            // Garis Pemisah (Aman dari error layar hijau)
+            // Garis Pemisah
             Container(width: 1, height: 40, color: Colors.white54),
 
-            // Icon Add Cart (Alert)
+            // Ikon Add Cart
             IconButton(
               onPressed: () => _showSuccessAlert(context),
               icon: const Icon(Icons.add_shopping_cart, color: Colors.white, size: 28),
             ),
 
-            // Garis Pemisah 2
+            // Garis Pemisah
             Container(width: 1, height: 40, color: Colors.white54),
 
-            // Tombol Beli Sekarang
+            // Tombol Beli Sekarang (Hijau Aksen/Terang)
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: btnGreen,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                backgroundColor: accentLightGreen, // Warna Tombol Kontras
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                elevation: 2,
               ),
               onPressed: () {},
               child: const Text(
                 "Beli Sekarang",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
           ],
@@ -231,24 +224,31 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
-  // Widget Kecil untuk Baris Info
+  // Helper Widget: Baris Info (Teks Putih karena background kotak Hijau Tua)
   Widget _buildInfoRow(String label, String value) {
     return Row(
       children: [
-        SizedBox(width: 80, child: Text(label, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16))),
-        Text(value, style: const TextStyle(color: Colors.black87, fontSize: 16)),
+        SizedBox(width: 80, child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
+        Text(value, style: const TextStyle(color: Colors.white, fontSize: 16)),
       ],
     );
   }
 
-  // Widget Kecil untuk Review
+  // Helper Widget: Item Review
   Widget _buildReviewItem(String name, String comment, String imgPath) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.05), // Warna abu transparan
+        color: Colors.white, // Kartu review putih agar bersih
         borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          )
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -273,9 +273,10 @@ class ProductDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
+          // Gambar User/Produk Kecil di Kanan
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(imgPath, width: 50, height: 50, fit: BoxFit.cover),
+            child: Image.asset(imgPath, width: 60, height: 60, fit: BoxFit.cover),
           ),
         ],
       ),

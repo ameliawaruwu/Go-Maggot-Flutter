@@ -60,7 +60,7 @@ flutter:
     - assets/ 
   
   # --- 2. FONT (untuk logo) ---
-  fonts: # Harus sejajar dengan assets: dan uses-material-design:
+  fonts: 
     - family: Kaushan Script
       fonts:
         - asset: assets/fonts/KaushanScript-Regular.ttf # ⬅️ GANTI PATH FONT SESUAI DENGAN FILE ANDA

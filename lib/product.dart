@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart'; 
 import 'keranjang.dart';
 import 'main.dart'; 
-import 'detail_produk.dart'; // <--- SAYA TAMBAHKAN INI AGAR BISA PINDAH HALAMAN
+import 'detail_produk.dart'; 
+import 'komponen-navbar.dart'; // <--- JANGAN LUPA IMPORT INI
 
 class Product {
   final String name;
@@ -56,7 +56,7 @@ class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Warna latar belakang 
-    const Color customGreenBg = Color(0xFFA5C6A0);
+    const Color customGreenBg = Color(0xFF385E39);
 
     return Scaffold(
       backgroundColor: customGreenBg,
@@ -142,7 +142,6 @@ class ProductPage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
               decoration: const BoxDecoration(
-                // Warna latar belakang yang lebih terang untuk area produk
                 color: Color(0xFFE8F0E4), 
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -166,8 +165,9 @@ class ProductPage extends StatelessWidget {
           ),
           
           // Bottom Navigation Bar
-          CustomBottomNavBar(
-            indexSelected: 1, // Cukup kasih tau ini halaman index ke-1 (Produk)
+          // Pastikan komponen-navbar.dart sudah kamu update dengan logika Navigator
+          const CustomBottomNavBar(
+            indexSelected: 1, 
           ),
         ],
       ),
@@ -216,7 +216,7 @@ class ProductCard extends StatelessWidget {
                           height: 100,
                           color: Colors.red.shade100,
                           child: const Center(
-                            child: Text('❌ GAGAL MUAT GAMBAR', textAlign: TextAlign.center, style: TextStyle(fontSize: 10)),
+                            child: Text('❌ GAGAL', textAlign: TextAlign.center, style: TextStyle(fontSize: 10)),
                           ),
                         );
                       },
@@ -247,7 +247,7 @@ class ProductCard extends StatelessWidget {
             ),
             const SizedBox(height: 5),
 
-            
+            // Rating dan Tombol Detail/Add
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -259,10 +259,9 @@ class ProductCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    // --- TOMBOL DETAIL (DIEDIT DI SINI) ---
+                    // Tombol Detail
                     InkWell(
                       onTap: () {
-                         // Logika Pindah Halaman
                          Navigator.push(
                            context,
                            MaterialPageRoute(
@@ -273,14 +272,15 @@ class ProductCard extends StatelessWidget {
                       child: const Text(
                         'Detail',
                         style: TextStyle(
-                            color: Colors.black54, 
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold, // Saya tambahkan bold sedikit agar enak dilihat
-                            decoration: TextDecoration.underline // Garis bawah penanda link
+                          color: Colors.black54, 
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline
                         ),
                       ),
                     ),
                     const SizedBox(width: 5),
+                    
                     // Tombol Add (+)
                     Container(
                       width: 24,

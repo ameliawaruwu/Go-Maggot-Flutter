@@ -10,9 +10,10 @@ class ChatProdukPage extends StatefulWidget {
 class _ChatProdukPageState extends State<ChatProdukPage> {
   final TextEditingController _controller = TextEditingController();
 
-  // Definisi Warna (Sama dengan Detail Produk)
-  final Color darkGreen = const Color(0xFF5F7155);
-  final Color lightBg = const Color(0xFFE3E9D8);
+  // --- RUMUS WARNA (Sesuai Permintaan) ---
+  final Color primaryDarkGreen = const Color(0xFF385E39); // Hijau Tua (Header & Bubble Saya)
+  final Color accentLightGreen = const Color(0xFF6E9E4F); // Hijau Aksen (Opsional)
+  final Color lightCardGreen = const Color(0xFFE4EDE5);   // Hijau Pucat (Background)
   
   // Data Dummy Chat
   final List<Map<String, dynamic>> messages = [
@@ -25,11 +26,11 @@ class _ChatProdukPageState extends State<ChatProdukPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightBg,
+      backgroundColor: lightCardGreen, // Background Hijau Pucat
 
       // --- HEADER (AppBar) ---
       appBar: AppBar(
-        backgroundColor: darkGreen,
+        backgroundColor: primaryDarkGreen, // Header Hijau Tua
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
@@ -94,7 +95,7 @@ class _ChatProdukPageState extends State<ChatProdukPage> {
             child: Row(
               children: [
                 // Tombol Attachment (+)
-                Icon(Icons.add_circle_outline, color: darkGreen, size: 28),
+                Icon(Icons.add_circle_outline, color: primaryDarkGreen, size: 28),
                 const SizedBox(width: 10),
 
                 // Kolom Ketik
@@ -102,7 +103,7 @@ class _ChatProdukPageState extends State<ChatProdukPage> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     decoration: BoxDecoration(
-                      color: lightBg.withOpacity(0.5),
+                      color: lightCardGreen, // Background kolom ketik senada background
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: TextField(
@@ -131,7 +132,7 @@ class _ChatProdukPageState extends State<ChatProdukPage> {
                     }
                   },
                   child: CircleAvatar(
-                    backgroundColor: darkGreen,
+                    backgroundColor: primaryDarkGreen, // Tombol Kirim Hijau Tua
                     radius: 22,
                     child: const Icon(Icons.send, color: Colors.white, size: 20),
                   ),
@@ -153,8 +154,10 @@ class _ChatProdukPageState extends State<ChatProdukPage> {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         decoration: BoxDecoration(
-          // Jika saya (kanan) pakai Hijau Gelap, Jika admin (kiri) pakai Putih
-          color: isMe ? darkGreen : Colors.white,
+          // Logic Warna: 
+          // Chat Saya = Hijau Tua (primaryDarkGreen)
+          // Chat Admin = Putih (Colors.white)
+          color: isMe ? primaryDarkGreen : Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(15),
             topRight: const Radius.circular(15),

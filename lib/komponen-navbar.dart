@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // PENTING: Import ini agar ProductRoute & ProfileRoute dikenali
+import 'main.dart'; // PENTING: Agar ProductRoute & ProfileRoute dikenali
+import 'product.dart'; // Jika diperlukan untuk referensi lain
+// import 'colors.dart'; // Aktifkan jika file colors.dart sudah benar
 
 class CustomBottomNavBar extends StatelessWidget {
   final int indexSelected;
@@ -17,32 +19,24 @@ class CustomBottomNavBar extends StatelessWidget {
     // 2. Logika Pindah Halaman
     switch (index) {
       case 0:
-        // Beranda
-        print("Ke Beranda"); 
-        // Navigator.pushReplacementNamed(context, '/home'); // Aktifkan jika sudah ada
+        Navigator.pushReplacementNamed(context, HomeRoute);
         break;
       
       case 1:
         // Produk
-        // Gunakan pushReplacementNamed agar halaman tidak menumpuk
         Navigator.pushReplacementNamed(context, ProductRoute);
         break;
       
       case 2:
-        // Komunitas
-        print("Ke Komunitas");
+      //  Navigator.pushReplacementNamed(context, KomunitasRoute)
         break;
 
       case 3:
-        // Profile
-        // Gunakan pushReplacementNamed agar user tidak bisa 'Back' bolak-balik antara Produk & Profil
-        print("Ke Profil");
+        Navigator.pushReplacementNamed(context, EdukasiRoute);
         break;
-       
       
       case 4:
-        // Edukasi
-       Navigator.pushReplacementNamed(context, ProfileRoute);
+        Navigator.pushReplacementNamed(context, ProfileRoute);
         break;
     }
   }
@@ -50,22 +44,29 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget _buildNavItem(BuildContext context, IconData icon, String label, int index) {
     final isSelected = index == indexSelected;
     
+    // Definisi Warna (Sesuaikan dengan colors.dart jika ada)
+    final selectedColor = const Color(0xFF6B8E23); // Hijau Terang (accentLightGreen)
+    final unselectedColor = Colors.grey;           // Abu-abu (secondaryTextColor)
+    final primaryDarkGreen = const Color(0xFF2C4A34); // Hijau Gelap (Background)
+
     return InkWell(
-      onTap: () => _onNavBarTap(context, index), // Panggil fungsi internal di atas
+      onTap: () => _onNavBarTap(context, index), // Panggil fungsi navigasi
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center, 
           children: [
             Icon(
               icon,
-              color: isSelected ? Colors.green.shade700 : Colors.black54,
+              color: isSelected ? selectedColor : unselectedColor,
+              size: 24, 
             ),
             Text(
               label,
               style: TextStyle(
-                fontSize: 10,
-                color: isSelected ? Colors.green.shade700 : Colors.black54,
+                fontSize: 10, // Ukuran font diperkecil sedikit agar muat
+                color: isSelected ? selectedColor : unselectedColor,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -76,15 +77,24 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    // Warna Background Navbar
+    final primaryDarkGreen = const Color(0xFF2C4A34); 
+
     return Container(
+      height: 70, 
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: primaryDarkGreen, // Background Hijau Tua
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20), 
+          topRight: Radius.circular(20), 
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 5,
+            offset: const Offset(0, -3),
           ),
         ],
       ),
