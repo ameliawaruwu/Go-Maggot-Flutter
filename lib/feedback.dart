@@ -10,21 +10,18 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  // State untuk menyimpan nilai-nilai feedback
   int _productQualityRating = 0;
   int _sellerServiceRating = 0;
   int _deliverySpeedRating = 0;
   String _description = '';
   bool _showName = true;
-  bool _mediaAttached = false; // Simulasi untuk menandakan media telah dipilih
+  bool _mediaAttached = false; 
 
-  // Warna-warna yang diestimasi dari desain gambar
-  final Color primaryColor = const Color.fromARGB(255, 55, 89, 53); // Latar Belakang Utama
-  final Color cardColor = const Color(0xFFE4EDE1); // Warna Card/Background Deskripsi
+  final Color primaryColor = const Color.fromARGB(255, 55, 89, 53); 
+  final Color cardColor = const Color(0xFFE4EDE1);
   final Color textColor = Colors.white;
 
   void _submitFeedback() {
-    // Logika untuk mengirim data ke server
     debugPrint('Feedback Dikirim:');
     debugPrint('Kualitas Produk: $_productQualityRating');
     debugPrint('Pelayanan Penjual: $_sellerServiceRating');
@@ -45,14 +42,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
         margin: const EdgeInsets.symmetric(horizontal: 5),
         child: ElevatedButton(
           onPressed: () {
-            // Logika memilih file gambar/video
             setState(() {
-              _mediaAttached = true; // Set state untuk simulasi
+              _mediaAttached = true; 
             });
             debugPrint('Memilih $label');
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: cardColor, // Warna latar belakang tombol
+            backgroundColor: cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -94,7 +90,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // --- Kualitas Produk Rating ---
+            // Kualitas Produk Rating 
             Text(
               'Kualitas Produk',
               style: TextStyle(
@@ -111,7 +107,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 20),
 
-            // --- Deskripsi Text Area ---
+            // Deskripsi Text Area 
             Text(
               'Deskripsi:',
               style: TextStyle(
@@ -127,7 +123,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextField(
-                  maxLines: null, // Memungkinkan banyak baris
+                  maxLines: null,
                   decoration: const InputDecoration.collapsed(
                     hintText: 'Tuliskan ulasan produk Anda di sini...',
                     hintStyle: TextStyle(color: Colors.black54),
@@ -140,7 +136,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 20),
 
-            // --- Tambahkan Gambar atau Video ---
+            // Tambahkan Gambar atau Video 
             Text(
               'Tambahkan gambar atau video:',
               style: TextStyle(
@@ -155,7 +151,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 30),
 
-            // --- Opsi Tampilkan Nama (Toggle) ---
+            // Opsi Tampilkan Nama 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -178,7 +174,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 20),
 
-            // --- Pelayanan Penjual Rating ---
+            // Pelayanan Penjual Rating 
             Text(
               'Pelayanan Penjual',
               style: TextStyle(color: textColor, fontSize: 18),
@@ -193,7 +189,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 20),
 
-            // --- Kecepatan Pengiriman Rating ---
+            // Kecepatan Pengiriman Rating 
             Text(
               'Kecepatan Pengiriman',
               style: TextStyle(color: textColor, fontSize: 18),

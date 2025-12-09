@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'main.dart'; 
+import 'home_page.dart'; 
 
 const String appName = 'GoMaggot';
-
-// --- KONSTANTA WARNA ---
 const Color primaryDarkGreen = Color(0xFF385E39);
 const Color accentLightGreen = Color(0xFF6E9E4F);
 
@@ -116,9 +115,11 @@ class LoginScreen extends StatelessWidget {
               // Tombol MASUK 
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(
+                  Navigator.pushReplacement(
                     context, 
-                    ProductRoute, 
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(), 
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -232,7 +233,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // Widget pembantu untuk tombol sosial (BARU/DISESUAIKAN)
+  // Widget pembantu untuk tombol sosial 
   Widget _buildSocialButton({
       required IconData icon, 
       required Color color,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart'; 
 import 'keranjang.dart';
 import 'main.dart'; 
 
@@ -55,7 +54,7 @@ class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Warna latar belakang 
-    const Color customGreenBg = Color(0xFFA5C6A0);
+    const Color customGreenBg = Color(0xFF385E39);
 
     return Scaffold(
       backgroundColor: customGreenBg,
@@ -141,7 +140,6 @@ class ProductPage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
               decoration: const BoxDecoration(
-                // Warna latar belakang yang lebih terang untuk area produk
                 color: Color(0xFFE8F0E4), 
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -162,30 +160,6 @@ class ProductPage extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          
-          // Bottom Navigation Bar
-          CustomBottomNavBar(
-            indexSelected: 1, 
-            onItemSelected: (index) {
-              // 💡 Lakukan logika navigasi di sini berdasarkan index yang dipilih
-              // Contoh sederhana: 
-              /*
-              switch (index) {
-                case 0:
-                  Navigator.pushNamed(context, HomeRoute);
-                  break;
-                case 1:
-                  // Sudah di halaman Produk, tidak perlu navigasi
-                  break;
-                case 2:
-                  Navigator.pushNamed(context, CommunityRoute);
-                  break;
-                // ... dan seterusnya
-              }
-              */
-              print('Navigasi ke index: $index');
-            },
           ),
         ],
       ),

@@ -4,12 +4,14 @@ import 'login.dart';
 import 'keranjang.dart';
 import 'pembayaran.dart';
 import 'feedback.dart';
+import 'home_page.dart';
 
 const String LoginRoute = '/';
 const String ProductRoute = '/product';
 const String CartRoute = '/cart'; 
 const String PaymentRoute = '/payment';
 const String FeedbackRoute = '/feedback';
+const String HomeRoute = '/home';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +25,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Go-Maggot',
       theme: ThemeData(
-        // Sesuaikan warna tema utama (misalnya hijau, jika ingin)
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.green, 
         ),
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         CartRoute: (context) => const CartScreen(), 
         PaymentRoute: (context) => const PaymentPage(),
         FeedbackRoute: (context) => const FeedbackPage(),
+        HomeRoute: (context) => const HomePage(),
       },
     );
   }

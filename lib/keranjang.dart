@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-// 👇 TAMBAHKAN: Import ini diperlukan untuk mengakses konstanta PaymentRoute
 import 'main.dart'; 
 
-// --- KONSTANTA WARNA ---
-// Warna Hijau Gelap utama (dari latar belakang login)
 const Color primaryDarkGreen = Color(0xFF385E39);
-// Warna Hijau Terang aksen (dari tombol/logo)
 const Color accentLightGreen = Color(0xFF6E9E4F);
-// Warna background kartu produk (Hijau Muda/Putih pudar)
 const Color lightCardGreen = Color(0xFFE4EDE5); 
-// -----------------------
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -19,7 +13,7 @@ class CartScreen extends StatelessWidget {
     return Scaffold(
       // APP BAR
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:  Color(0xFF385E39),
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -30,14 +24,14 @@ class CartScreen extends StatelessWidget {
         ),
         title: const Text(
           'Keranjang Saya',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Color.fromARGB(255, 252, 247, 247), fontWeight: FontWeight.bold),
         ),
         actions: [
           TextButton(
             onPressed: () {},
             child: const Text(
               'Pilih',
-              style: TextStyle(color: accentLightGreen, fontSize: 16),
+              style: TextStyle(color: Color.fromARGB(255, 252, 247, 247), fontSize: 16),
             ),
           ),
         ],
@@ -108,7 +102,6 @@ class CartScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nama Toko (GoMaggot)
             const Text(
               'GoMaggot',
               style: TextStyle(
@@ -195,9 +188,9 @@ class CartScreen extends StatelessWidget {
   // Widget untuk bagian Voucher
   Widget _buildVoucherSection() {
     return Container(
-      margin: const EdgeInsets.only(top: 10.0, bottom: 0.0), // Padding di atas footer utama
+      margin: const EdgeInsets.only(top: 10.0, bottom: 0.0), 
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      color: lightCardGreen, // Warna latar belakang kartu voucher
+      color: lightCardGreen, 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -224,9 +217,9 @@ class CartScreen extends StatelessWidget {
   // Widget untuk footer Checkout
   Widget _buildCheckoutFooter(BuildContext context) {
     return Container(
-      height: 70, // Tinggi yang cukup untuk footer
+      height: 70, 
       decoration: BoxDecoration(
-        color: primaryDarkGreen, // Warna hijau gelap
+        color: primaryDarkGreen, 
         border: Border(
           top: BorderSide(color: Colors.grey[300]!, width: 1),
         ),
@@ -272,7 +265,6 @@ class CartScreen extends StatelessWidget {
 
           // Tombol Checkout
           ElevatedButton(
-            // 👇 PERUBAHAN DI SINI: Navigasi menggunakan PaymentRoute
             onPressed: () {
               Navigator.pushNamed(context, PaymentRoute);
             },

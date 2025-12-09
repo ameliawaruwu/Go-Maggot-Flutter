@@ -1,10 +1,8 @@
-// lib/rating_star.dart
 import 'package:flutter/material.dart';
 
-// Warna yang konsisten dengan desain Anda
 const Color starColor = Colors.white; 
 const Color unratedColor = Colors.white54;
-const Color ratingContainerColor = Color(0xFF6B8E6A); // Hijau Gelap
+const Color ratingContainerColor = Color(0xFF6B8E6A); 
 
 class InteractiveRatingStars extends StatefulWidget {
   final int initialRating;

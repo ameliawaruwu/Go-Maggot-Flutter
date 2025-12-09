@@ -33,16 +33,16 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF6B8E6A); 
+    const Color primaryColor = Color(0xFF385E39);
     const Color cardColor = Color(0xFFE4EDE1); 
     return Scaffold(
-      backgroundColor: primaryColor, // Latar belakang utama
+      backgroundColor: primaryColor, 
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0, 
         title: const Text(
           'Pembayaran',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -61,7 +61,7 @@ class _PaymentPageState extends State<PaymentPage> {
               borderRadius: BorderRadius.circular(15.0),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Biarkan konten menyesuaikan tinggi
+              mainAxisSize: MainAxisSize.min, 
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 // Judul "Scan QR Code"
@@ -77,7 +77,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 // Widget QR Code
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.all(10), // Padding untuk memisahkan dari background
+                    padding: const EdgeInsets.all(10), 
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -89,7 +89,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ],
                     ),
-                    child: const QrCodeImage(size: 150), // Ukuran QR Code
+                    child: const QrCodeImage(size: 150),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -148,8 +148,8 @@ class _PaymentPageState extends State<PaymentPage> {
                 ElevatedButton(
                   onPressed: _submitPayment,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor, // Warna tombol
-                    foregroundColor: Colors.white, // Warna teks tombol
+                    backgroundColor: primaryColor, 
+                    foregroundColor: Colors.white, 
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
