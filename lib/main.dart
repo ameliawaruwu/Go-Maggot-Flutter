@@ -3,11 +3,13 @@ import 'product.dart';
 import 'login.dart'; 
 import 'keranjang.dart';
 import 'pembayaran.dart';
+import 'feedback.dart';
 
 const String LoginRoute = '/';
 const String ProductRoute = '/product';
 const String CartRoute = '/cart'; 
 const String PaymentRoute = '/payment';
+const String FeedbackRoute = '/feedback';
 
 void main() {
   runApp(const MyApp());
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         ProductRoute: (context) => const ProductPage(), 
         CartRoute: (context) => const CartScreen(), 
         PaymentRoute: (context) => const PaymentPage(),
+        FeedbackRoute: (context) => const FeedbackPage(),
       },
     );
   }
