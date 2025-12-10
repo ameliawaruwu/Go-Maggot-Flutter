@@ -5,168 +5,173 @@ class BantuanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Definisi Warna sesuai Desain (Kira-kira dari gambar)
-    final Color greenPrimary = const Color(0xFF6B7E66); // Hijau Olive
-    final Color creamHeader = const Color(0xFFE4E8CC);  // Krem Atas
-    final Color greyButton = const Color(0xFFD9D9D9);   // Abu-abu tombol
-    
+    // --- PALET WARNA (Sama dengan Profil) ---
+    final Color darkGreenBg = const Color(0xFF385E39); // Hijau Tua (Background Header & Body)
+    final Color whiteCard = const Color(0xFFFFFFFF);   // Putih (Konten Bawah)
+    final Color lightGreyBtn = const Color(0xFFF5F5F5); // Abu-abu muda untuk tombol kotak
+
     return Scaffold(
-      backgroundColor: greenPrimary, // Background utama hijau
+      backgroundColor: darkGreenBg, // Background Utama Hijau Tua
+      
+      // --- HEADER (Custom AppBar Manual) ---
       body: Column(
         children: [
-          // 1. BAGIAN HEADER (Bentuk melengkung di bawah)
-          Container(
-            padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: creamHeader,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
-            ),
-            child: Row(
+          // 1. BAGIAN ATAS (Header & Pencarian) - Background Hijau
+          Padding(
+            padding: const EdgeInsets.only(top: 50, left: 24, right: 24, bottom: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Kembali ke halaman sebelumnya
-                  },
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+                // Tombol Back & Judul
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 20),
+                    const Text(
+                      "Pusat Bantuan",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 30),
+                
+                // Sapaan
                 const Text(
-                  "Pusat Bantuan",
+                  "Halo, Apa ada yang bisa dibantu?",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 22, // Sedikit lebih besar
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Search Bar (Putih agar kontras di atas hijau)
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: "Cari topik bantuan...",
+                    hintStyle: TextStyle(color: Colors.grey.shade500),
+                    filled: true,
+                    fillColor: Colors.white, 
+                    prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   ),
                 ),
               ],
             ),
           ),
 
-          // 2. BAGIAN ISI (Scrollable agar tidak overflow di HP kecil)
+          // 2. BAGIAN ISI (Kartu Putih Melengkung) - Sama seperti Profil
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Sapaan
-                  const Text(
-                    "Halo, Apa ada yang bisa dibantu?",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            child: Container(
+              padding: const EdgeInsets.only(top: 30, left: 24, right: 24),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: whiteCard,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 30), // Padding bawah agar scroll enak
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Tombol Kotak-kotak (Track, Cancel, etc)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildSquareButton("Lacak\nPesanan", lightGreyBtn),
+                        _buildSquareButton("Batalkan\nPesanan", lightGreyBtn),
+                        _buildSquareButton("Status\nPengembalian", lightGreyBtn),
+                        _buildSquareButton("Ganti\nNomor", lightGreyBtn),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 15),
+                    const SizedBox(height: 20),
 
-                  // Search Bar
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: "",
-                      filled: true,
-                      fillColor: greyButton,
-                      prefixIcon: const Icon(Icons.search, color: Colors.black),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Tombol Kotak-kotak (Track, Cancel, etc)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildSquareButton("Track\nOrder", greyButton),
-                      _buildSquareButton("Cancel\nOrder", greyButton),
-                      _buildSquareButton("Return\nStatus", greyButton),
-                      _buildSquareButton("Change\nNumber", greyButton),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-
-                  // Tombol Panjang (Apply for Return)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: greyButton,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                    // Tombol Panjang (Ajukan Pengembalian)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: lightGreyBtn, // Abu muda
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: const Text(
+                          "Ajukan Pengembalian Barang/Dana",
+                          style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      child: const Text(
-                        "Apply for Return",
-                        style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
                     ),
-                  ),
-                  const SizedBox(height: 25),
+                    const SizedBox(height: 30),
 
-                  // List Pertanyaan (FAQ)
-                  _buildFaqItem("How can I submit a return request?"),
-                  _buildFaqItem("How can I submit a return request?"),
-                  _buildFaqItem("How can I submit a return request?"),
-                  _buildFaqItem("How can I submit a return request?"),
-                  
-                  const SizedBox(height: 30),
-
-                  // Contact Us Section
-                  const Text(
-                    "Contact Us",
-                    style: TextStyle(
-                      fontSize: 18, 
-                      fontWeight: FontWeight.bold, 
-                      color: Colors.white
+                    // List Pertanyaan (FAQ) - Teks Hitam karena background putih
+                    const Text(
+                      "Pertanyaan Populer",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
                     ),
-                  ),
-                  const SizedBox(height: 15),
+                    const SizedBox(height: 10),
+                    _buildFaqItem("Bagaimana cara mengajukan pengembalian?"),
+                    _buildFaqItem("Metode pembayaran apa saja yang tersedia?"),
+                    _buildFaqItem("Berapa lama proses pengiriman?"),
+                    _buildFaqItem("Bagaimana cara mengubah alamat?"),
+                    
+                    const SizedBox(height: 30),
 
-                  // Chat Item
-                  Row(
-                    children: [
-                      const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 30),
-                      const SizedBox(width: 15),
-                      const Text(
-                        "Chat GoMaggot Now",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                    // Contact Us Section
+                    const Text(
+                      "Hubungi Kami",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 15),
 
-                  // Call Item
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start, // Agar text rata atas
-                    children: [
-                      const Icon(Icons.phone_in_talk_outlined, color: Colors.white, size: 30),
-                      const SizedBox(width: 15),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Call Us",
-                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Operating Hours: 07:00 AM - 05.00 PM",
-                            style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30), // Spasi bawah agar tidak mentok
-                ],
+                    // Chat Item
+                    _buildContactItem(Icons.chat_bubble_outline, "Chat GoMaggot Sekarang"),
+                    const SizedBox(height: 15),
+                    
+                    // Call Item
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.phone_in_talk_outlined, color: Colors.black87, size: 28),
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Telepon Kami",
+                              style: TextStyle(color: Colors.black87, fontSize: 16),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "Jam Operasional: 07:00 - 17.00 WIB",
+                              style: TextStyle(color: Colors.black54, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -175,48 +180,63 @@ class BantuanPage extends StatelessWidget {
     );
   }
 
-  // WIDGET KUSTOM: Untuk membuat tombol kotak kecil agar kode tidak berulang
+  // WIDGET TOMBOL KOTAK
   Widget _buildSquareButton(String text, Color color) {
     return Container(
-      width: 75, // Ukuran kotak
+      width: 75, 
       height: 75,
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
       ),
       alignment: Alignment.center,
       child: Text(
         text,
         textAlign: TextAlign.center,
         style: const TextStyle(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: Colors.black,
+          color: Colors.black87,
         ),
       ),
     );
   }
 
-  // WIDGET KUSTOM: Untuk list pertanyaan (garis bawah)
+  // WIDGET ITEM FAQ (Garis Bawah)
   Widget _buildFaqItem(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       decoration: const BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Colors.white54, width: 0.5), // Garis tipis di bawah
+          bottom: BorderSide(color: Colors.black12, width: 1), // Garis tipis abu
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            text,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.black87, fontSize: 14),
+            ),
           ),
-          // Jika ingin icon panah kecil di kanan seperti menu
-          // const Icon(Icons.arrow_forward_ios, size: 12, color: Colors.white),
+          const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
         ],
       ),
+    );
+  }
+
+  // WIDGET ITEM KONTAK
+  Widget _buildContactItem(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.black87, size: 28),
+        const SizedBox(width: 15),
+        Text(
+          text,
+          style: const TextStyle(color: Colors.black87, fontSize: 16),
+        ),
+      ],
     );
   }
 }

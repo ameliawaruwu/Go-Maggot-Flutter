@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart'; // <--- PENTING: Import Navbar agar muncul di bawah
+import 'komponen-navbar.dart'; // Import Navbar
+import 'bantuan.dart'; // Import halaman Bantuan (pastikan file ini ada/dibuat)
+// import 'faq.dart';     // Import halaman FAQ (pastikan file ini ada/dibuat)
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Color darkGreenBg = const Color(0xFF2C4A34);  // Hijau tua background
-    final Color lightGreenBtn = const Color(0xFF6C856C); // Hijau pudar untuk tombol Orders/Reviews
+    final Color darkGreenBg = const Color(0xFF385E39);  // Hijau tua background
+    final Color lightGreenBtn = const Color(0xFF6C856C); // Hijau pudar untuk tombol Pesanan/Ulasan
     final Color whiteCard = const Color(0xFFFFFFFF);
     final Color darkButton = const Color(0xFF1B3022);    // Hijau gelap tombol Logout
 
@@ -23,7 +25,7 @@ class ProfilePage extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "My Profile",
+          "Profil Saya", // Bahasa Indonesia
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: false, 
@@ -32,12 +34,12 @@ class ProfilePage extends StatelessWidget {
       // --- BODY ---
       body: Column(
         children: [
-          // 1. BAGIAN HEADER (Foto & Tombol Atas)
+          // 1. BAGIAN HEADER (Foto & Info User)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
             child: Column(
               children: [
-                // Baris Foto & Nama
+                // Baris Foto & Nama (POV SUDAH LOGIN)
                 Row(
                   children: [
                     // Foto Profil Lingkaran
@@ -46,14 +48,12 @@ class ProfilePage extends StatelessWidget {
                       height: 80,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white, // Warna dasar jika gambar gagal muat
+                        color: Colors.white, 
                       ),
-                      // Menggunakan ClipOval agar gambar benar-benar bulat
                       child: ClipOval(
                         child: Image.asset(
                           'assets/images/profile_pic.png',
                           fit: BoxFit.cover,
-                          // Error Builder: Jika gambar tidak ditemukan, tampilkan ikon orang
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(Icons.person, size: 50, color: Colors.grey.shade400);
                           },
@@ -61,25 +61,41 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 20),
-                    // Teks Login/Register
-                    const Text(
-                      "Login/Register",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                    // Teks Nama & Email (User Login)
+                    Expanded( // Gunakan Expanded agar teks panjang tidak overflow
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "Amelia Waruwu", // Nama User
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            "amelia@student.telkomuniversity.ac.id", // Email User
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 25),
 
-                // Baris Tombol Orders & Reviews
+                // Baris Tombol Pesanan & Ulasan (Bahasa Indonesia)
                 Row(
                   children: [
-                    Expanded(child: _buildHeaderButton("Orders", lightGreenBtn)),
+                    Expanded(child: _buildHeaderButton("Pesanan", lightGreenBtn)),
                     const SizedBox(width: 15),
-                    Expanded(child: _buildHeaderButton("Reviews", lightGreenBtn)), 
+                    Expanded(child: _buildHeaderButton("Ulasan", lightGreenBtn)), 
                   ],
                 ),
               ],
@@ -100,46 +116,47 @@ class ProfilePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // List Menu
-                  _buildMenuItem("Account"),
-                  _buildMenuItem("Notifications"),
-                  _buildMenuItem("Language"),
-                  _buildMenuItem("Help"),
-                  _buildMenuItem("FAQ"),
+                  // List Menu (Bahasa Indonesia & Navigasi)
+                  _buildMenuItem(context, "Akun Saya", null), // null = belum ada halaman
+                  _buildMenuItem(context, "Notifikasi", null),
+                  _buildMenuItem(context, "Bahasa", null),
+                  
+                  // Menu dengan Navigasi Khusus
+                  _buildMenuItem(context, "Bantuan", () {
+                    // Navigasi ke Halaman Bantuan
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => const BantuanPage())
+                    );
+                  }),
+                  
+                  _buildMenuItem(context, "FAQ", () {
+                    // Navigasi ke Halaman FAQ
+                    // Navigator.push(
+                    //   context, 
+                    //   MaterialPageRoute(builder: (context) => const FaqPage())
+                    // );
+                  }),
 
-                  const Spacer(), // Mendorong tombol ke bawah
+                  const Spacer(), 
 
-                  // Tombol Logout & Add Account
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: darkButton,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: const Text("LOGOUT", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  // Tombol Keluar (Logout)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Logika Logout (Misal kembali ke LoginScreen)
+                        Navigator.pushReplacementNamed(context, '/'); // Asumsi '/' adalah LoginRoute
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: darkButton,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: darkButton,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: const Text("Add Account", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                    ],
+                      child: const Text("KELUAR", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
                   ),
                   const SizedBox(height: 10), 
                 ],
@@ -149,13 +166,14 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
 
-      
+      // --- BOTTOM NAVIGATION BAR ---
       bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 4, 
+        indexSelected: 4, // Index 4 = Profil
       ),
     );
   }
 
+  // WIDGET TOMBOL ATAS
   Widget _buildHeaderButton(String text, Color color) {
     return ElevatedButton(
       onPressed: () {},
@@ -174,29 +192,32 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // WIDGET ITEM MENU (Account, Notif, dll)
-  Widget _buildMenuItem(String text) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.black12, width: 1), // Garis bawah tipis
-        ),
-      ),
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1B3022), // Hijau sangat gelap (hampir hitam)
-            ),
+  // WIDGET ITEM MENU (Dengan Navigasi)
+  Widget _buildMenuItem(BuildContext context, String text, VoidCallback? onTap) {
+    return InkWell( // Bungkus dengan InkWell agar bisa diklik
+      onTap: onTap, 
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.black12, width: 1), 
           ),
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black87),
-        ],
+        ),
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              text,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1B3022), 
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black87),
+          ],
+        ),
       ),
     );
   }

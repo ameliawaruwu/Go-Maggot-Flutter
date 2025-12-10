@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart'; // Pastikan ini ada
-// import 'colors.dart'; // Aktifkan jika punya
+import 'komponen-navbar.dart'; 
+import 'galeri.dart'; // <--- PENTING: Import Halaman Galeri
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -75,12 +75,9 @@ class HomePage extends StatelessWidget {
       ),
       
       // --- BODY ---
-      // Langsung panggil konten beranda
       body: const HomeContent(),
       
       // --- BOTTOM NAVIGATION BAR ---
-      // Perbaikan Line 68 ada di sini:
-      // Kita set index 0 (Beranda) dan HAPUS onItemSelected
       bottomNavigationBar: const CustomBottomNavBar(
         indexSelected: 0, 
       ),
@@ -88,7 +85,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// === KONTEN BERANDA (DIPISAH SUPAYA RAPI) ===
+// === KONTEN BERANDA ===
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
@@ -193,7 +190,7 @@ class HomeContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: Image.asset(
           imagePath, 
-          fit: BoxFit.contain, // Contain agar gambar utuh
+          fit: BoxFit.contain, 
           errorBuilder: (ctx, err, stack) => const Icon(Icons.image_not_supported, color: Colors.grey),
         ),
       ),
@@ -241,7 +238,13 @@ class HomeContent extends StatelessWidget {
             right: 15,
             bottom: 20,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                // --- UPDATE DI SINI: Navigasi ke Halaman Galeri ---
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GaleriPage()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: accentLightGreen,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),
