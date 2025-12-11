@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gomaggot_flutter/bantuan.dart';
 import 'package:gomaggot_flutter/edukasi.dart';
-import 'package:gomaggot_flutter/profil.dart'; // Pastikan file profil.dart berisi class ProfilePage
+import 'package:gomaggot_flutter/profil.dart';
 import 'product.dart';
 import 'login.dart';
 import 'keranjang.dart';
@@ -9,7 +9,7 @@ import 'pembayaran.dart';
 import 'feedback.dart';
 import 'home_page.dart';
 
-// Definisi Konstanta Rute
+// Route
 const String LoginRoute = '/';
 const String ProductRoute = '/product';
 const String CartRoute = '/cart';

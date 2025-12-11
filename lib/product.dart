@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'keranjang.dart';
 import 'main.dart'; 
 import 'detail_produk.dart'; 
-import 'komponen-navbar.dart'; // <--- JANGAN LUPA IMPORT INI
+import 'komponen-navbar.dart'; 
 
 class Product {
   final String name;
@@ -164,8 +164,6 @@ class ProductPage extends StatelessWidget {
             ),
           ),
           
-          // Bottom Navigation Bar
-          // Pastikan komponen-navbar.dart sudah kamu update dengan logika Navigator
           const CustomBottomNavBar(
             indexSelected: 1, 
           ),
@@ -201,7 +199,6 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar Produk dan Tombol Favorite
             Stack(
               children: [
                 Center(

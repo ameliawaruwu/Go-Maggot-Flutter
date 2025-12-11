@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'product.dart'; // Pastikan file model Product ada
-import 'keranjang.dart'; // Agar navigasi ke keranjang jalan
-import 'main.dart'; // Agar rute lain dikenali jika perlu
-import 'chat_produk.dart'; // Agar bisa pindah ke halaman chat
+import 'product.dart'; 
+import 'keranjang.dart'; 
+import 'main.dart'; 
+import 'chat_produk.dart';
 
-// --- KONSTANTA WARNA DARI KERANJANG SAYA ---
-const Color primaryDarkGreen = Color(0xFF385E39); // Hijau Tua (Header)
-const Color accentLightGreen = Color(0xFF6E9E4F); // Hijau Aksen (Tombol)
-const Color lightCardGreen = Color(0xFFE4EDE5);   // Hijau Pucat (Background)
-
+const Color primaryDarkGreen = Color(0xFF385E39); 
+const Color accentLightGreen = Color(0xFF6E9E4F); 
+const Color lightCardGreen = Color(0xFFE4EDE5);   
 class ProductDetailPage extends StatelessWidget {
   final Product product;
 
   const ProductDetailPage({super.key, required this.product});
 
-  // Fungsi Alert Berhasil Masuk Keranjang
   void _showSuccessAlert(BuildContext context) {
     showDialog(
       context: context,
@@ -45,11 +42,11 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightCardGreen, // Background Senada dengan Keranjang
+      backgroundColor: lightCardGreen, 
       
-      // --- HEADER (APPBAR) ---
+     
       appBar: AppBar(
-        backgroundColor: primaryDarkGreen, // Hijau Tua
+        backgroundColor: primaryDarkGreen, 
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
@@ -66,20 +63,17 @@ class ProductDetailPage extends StatelessWidget {
         ],
       ),
 
-      // --- BODY (KONTEN) ---
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 20),
-            
-            // 1. GAMBAR PRODUK
             Center(
               child: Container(
                 height: 220,
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.6), // Putih transparan agar gambar pop-out
+                  color: Colors.white.withOpacity(0.6),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: ClipRRect(
@@ -95,7 +89,6 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 2. JUDUL DAN HARGA
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
@@ -122,7 +115,7 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 3. KOTAK INFO (Hijau Tua - Agar kontras dengan background pucat)
+           
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(20),
@@ -224,7 +217,6 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
-  // Helper Widget: Baris Info (Teks Putih karena background kotak Hijau Tua)
   Widget _buildInfoRow(String label, String value) {
     return Row(
       children: [
@@ -234,13 +226,12 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
-  // Helper Widget: Item Review
   Widget _buildReviewItem(String name, String comment, String imgPath) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white, // Kartu review putih agar bersih
+        color: Colors.white, 
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(

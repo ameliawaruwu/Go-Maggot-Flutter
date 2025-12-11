@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'komponen-navbar.dart'; 
-import 'galeri.dart'; // <--- PENTING: Import Halaman Galeri
+import 'galeri.dart';
+import 'notifikasi.dart'; // <--- 1. IMPORT FILE NOTIFIKASI
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Definisi Warna Lokal (Supaya aman jika colors.dart belum ada)
+    // Definisi Warna Lokal
     const Color primaryDarkGreen = Color(0xFF385E39);
     const Color accentLightGreen = Color(0xFF6E9E4F);
     const Color secondaryTextColor = Colors.white;
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
       // --- APP BAR ---
       appBar: AppBar(
         backgroundColor: primaryDarkGreen,
-        automaticallyImplyLeading: false, // Hilangkan tombol back di Home
+        automaticallyImplyLeading: false, 
         elevation: 0,
         toolbarHeight: 90, 
         flexibleSpace: Container(
@@ -63,9 +64,17 @@ class HomePage extends StatelessWidget {
                     icon: const Icon(Icons.search, color: secondaryTextColor, size: 30),
                     onPressed: () {},
                   ),
+                  
+                  // --- 2. UPDATE ICON NOTIFIKASI DI SINI ---
                   IconButton(
                     icon: const Icon(Icons.notifications_none, color: secondaryTextColor, size: 30),
-                    onPressed: () {},
+                    onPressed: () {
+                      // Pindah ke Halaman Notifikasi
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotifikasiPage()),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -74,10 +83,8 @@ class HomePage extends StatelessWidget {
         ),
       ),
       
-      // --- BODY ---
       body: const HomeContent(),
       
-      // --- BOTTOM NAVIGATION BAR ---
       bottomNavigationBar: const CustomBottomNavBar(
         indexSelected: 0, 
       ),
@@ -85,11 +92,10 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// === KONTEN BERANDA ===
+// === KONTEN BERANDA (TIDAK ADA PERUBAHAN DI BAWAH INI) ===
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
-  // Warna Static untuk Class ini
   static const Color primaryDarkGreen = Color(0xFF385E39);
   static const Color accentLightGreen = Color(0xFF6E9E4F);
   static const Color secondaryTextColor = Colors.white; 
@@ -126,7 +132,6 @@ class HomeContent extends StatelessWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // Gambar Maggot
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
@@ -138,7 +143,6 @@ class HomeContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 15),
-              // Deskripsi
               const Expanded(
                 child: Text('Apa itu maggot?\nMaggot atau lebih sering disebut sebagai belatung, merupakan larva dari jenis lalat Black Soldier Fly (BSF).', 
                   style: TextStyle(fontSize: 14, color: primaryTextColor, height: 1.4,), 
@@ -239,7 +243,6 @@ class HomeContent extends StatelessWidget {
             bottom: 20,
             child: ElevatedButton(
               onPressed: () {
-                // --- UPDATE DI SINI: Navigasi ke Halaman Galeri ---
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const GaleriPage()),

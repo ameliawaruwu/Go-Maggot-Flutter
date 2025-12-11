@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // PENTING: Agar ProductRoute & ProfileRoute dikenali
-import 'product.dart'; // Jika diperlukan untuk referensi lain
-// import 'colors.dart'; // Aktifkan jika file colors.dart sudah benar
-
+import 'main.dart';
+import 'product.dart';
 class CustomBottomNavBar extends StatelessWidget {
   final int indexSelected;
 
@@ -11,24 +9,18 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.indexSelected,
   });
 
-  // Fungsi Internal untuk Menangani Navigasi
   void _onNavBarTap(BuildContext context, int index) {
-    // 1. Cek: Jika menekan tombol halaman yang sedang aktif, jangan lakukan apa-apa
     if (index == indexSelected) return;
-
-    // 2. Logika Pindah Halaman
     switch (index) {
       case 0:
         Navigator.pushReplacementNamed(context, HomeRoute);
         break;
       
       case 1:
-        // Produk
         Navigator.pushReplacementNamed(context, ProductRoute);
         break;
       
       case 2:
-      //  Navigator.pushReplacementNamed(context, KomunitasRoute)
         break;
 
       case 3:
@@ -43,14 +35,12 @@ class CustomBottomNavBar extends StatelessWidget {
 
   Widget _buildNavItem(BuildContext context, IconData icon, String label, int index) {
     final isSelected = index == indexSelected;
-    
-    // Definisi Warna (Sesuaikan dengan colors.dart jika ada)
-    final selectedColor = const Color(0xFF6B8E23); // Hijau Terang (accentLightGreen)
-    final unselectedColor = Colors.grey;           // Abu-abu (secondaryTextColor)
-    final primaryDarkGreen = const Color(0xFF2C4A34); // Hijau Gelap (Background)
+    final selectedColor = const Color(0xFF6B8E23); 
+    final unselectedColor = Colors.grey;          
+    final primaryDarkGreen = const Color(0xFF2C4A34); 
 
     return InkWell(
-      onTap: () => _onNavBarTap(context, index), // Panggil fungsi navigasi
+      onTap: () => _onNavBarTap(context, index), 
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
         child: Column(
@@ -78,13 +68,12 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) { 
-    // Warna Background Navbar
     final primaryDarkGreen = const Color(0xFF2C4A34); 
 
     return Container(
       height: 70, 
       decoration: BoxDecoration(
-        color: primaryDarkGreen, // Background Hijau Tua
+        color: primaryDarkGreen, 
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20), 
           topRight: Radius.circular(20), 

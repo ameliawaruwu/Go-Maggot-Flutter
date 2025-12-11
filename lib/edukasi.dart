@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'komponen-navbar.dart'; 
+import 'artikel_detail.dart'; // <--- 1. WAJIB ADA: Import halaman tujuan
 
 class EdukasiPage extends StatelessWidget {
   const EdukasiPage({super.key});
@@ -7,30 +8,28 @@ class EdukasiPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // --- PALET WARNA ---
-    const Color primaryDarkGreen = Color(0xFF385E39); // Hijau Tua (Header)
-    const Color lightCardGreen = Color(0xFFE4EDE5);   // Hijau Pucat (Body)
-    const Color limeText = Color(0xFF7BBC38);         // Teks Aksen
-    const Color buttonGreen = Color(0xFF6AA336);      // Tombol
+    const Color primaryDarkGreen = Color(0xFF385E39); 
+    const Color lightCardGreen = Color(0xFFE4EDE5); 
+    const Color limeText = Color(0xFF7BBC38); 
+    const Color buttonGreen = Color(0xFF6AA336); 
     
     return Scaffold(
-      backgroundColor: lightCardGreen, // Background Body Hijau Pucat
+      backgroundColor: lightCardGreen, 
       
-      // --- HEADER (APPBAR) HIJAU TUA ---
+      // --- HEADER ---
       appBar: AppBar(
-        backgroundColor: primaryDarkGreen, // <--- INI JADI HIJAU TUA
+        backgroundColor: primaryDarkGreen,
         elevation: 0,
-        toolbarHeight: 80, // Tinggi header disesuaikan
-        automaticallyImplyLeading: false, // Hilangkan tombol back default
+        toolbarHeight: 80, 
+        automaticallyImplyLeading: false, 
         
-        // Isi Header (Search Bar + Notif)
         title: Row(
           children: [
-            // Search Bar
             Expanded(
               child: Container(
                 height: 45,
                 decoration: BoxDecoration(
-                  color: Colors.white, // Putih agar kontras dengan hijau tua
+                  color: Colors.white, 
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: const TextField(
@@ -46,20 +45,18 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             
-            // Icon Notifikasi
             Container(
               width: 45,
               height: 45,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5), // Border Putih
+                border: Border.all(color: Colors.white, width: 1.5), 
               ),
               child: const Icon(Icons.notifications_none_outlined, color: Colors.white, size: 26),
             ),
           ],
         ),
         
-        // Membuat lengkungan di bawah AppBar (Opsional, biar manis)
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
@@ -73,7 +70,6 @@ class EdukasiPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 2. TEKS SAMBUTAN
             const Text(
               "Hai Gomma,",
               style: TextStyle(fontSize: 24, color: primaryDarkGreen, fontWeight: FontWeight.bold),
@@ -84,14 +80,13 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
 
-            // 3. VIDEO THUMBNAIL
+            // Video Thumbnail
             Container(
               height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 color: Colors.black26, 
-                // image: const DecorationImage(image: AssetImage('assets/images/video_thumbnail.png'), fit: BoxFit.cover,),
               ),
               child: Center(
                 child: Container(
@@ -106,7 +101,7 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
 
-            // 4. DIVIDER "Artikel Kami"
+            // Divider
             const Row(
               children: [
                 Expanded(child: Divider(color: primaryDarkGreen, thickness: 1)),
@@ -122,7 +117,7 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // 5. GRID ARTIKEL
+            // GRID ARTIKEL
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -134,23 +129,23 @@ class EdukasiPage extends StatelessWidget {
               ),
               itemCount: 6,
               itemBuilder: (context, index) {
-                return _buildArticleCard(Colors.white, buttonGreen, primaryDarkGreen);
+                // <--- 2. PENTING: Kirim 'context' ke dalam fungsi builder
+                return _buildArticleCard(context, Colors.white, buttonGreen, primaryDarkGreen);
               },
             ),
           ],
         ),
       ),
       
-      // --- BOTTOM NAVIGATION BAR (PUTIH DEFAULT) ---
       bottomNavigationBar: const CustomBottomNavBar(
         indexSelected: 3, 
-        // Kita tidak mengirim parameter warna, jadi dia akan pakai default (Putih)
       ),
     );
   }
 
   // WIDGET KARTU ARTIKEL
-  Widget _buildArticleCard(Color cardBg, Color btnColor, Color textColor) {
+  // <--- 3. PENTING: Tambahkan parameter 'BuildContext context' di sini
+  Widget _buildArticleCard(BuildContext context, Color cardBg, Color btnColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -189,10 +184,17 @@ class EdukasiPage extends StatelessWidget {
             ),
           ),
           
+          // TOMBOL SELENGKAPNYA
           SizedBox(
             height: 24,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                // <--- 4. LOGIKA NAVIGASI: Pindah ke Artikel Detail
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ArtikelDetailPage()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: btnColor,
                 elevation: 0,
