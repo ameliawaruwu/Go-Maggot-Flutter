@@ -8,6 +8,7 @@ import 'keranjang.dart';
 import 'pembayaran.dart';
 import 'feedback.dart';
 import 'home_page.dart';
+import 'register.dart';
 
 // Route
 const String LoginRoute = '/';
@@ -18,6 +19,7 @@ const String PaymentRoute = '/payment';
 const String FeedbackRoute = '/feedback';
 const String HomeRoute = '/home';
 const String EdukasiRoute = '/edukasi';
+const String RegisterRoute = '/register';
 
 void main() {
   runApp(const MyApp());
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
 
       initialRoute: LoginRoute,
       routes: {
+        RegisterRoute: (context) => const RegisterScreen(), 
         LoginRoute: (context) => const LoginScreen(),
         ProductRoute: (context) => const ProductPage(),
         CartRoute: (context) => const CartScreen(),

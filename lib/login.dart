@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; 
-import 'home_page.dart'; 
+import 'main.dart';
+import 'home_page.dart';
 import 'forgot_password_screen.dart';
+import 'register.dart';
 
 const String appName = 'GoMaggot';
 const Color primaryDarkGreen = Color(0xFF385E39);
@@ -17,8 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
-  bool _rememberMe = false; 
+
+  bool _rememberMe = false;
   bool _isPasswordHidden = true;
 
   void _attemptLogin(BuildContext context) {
@@ -35,9 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     Navigator.pushReplacement(
-      context, 
+      context,
       MaterialPageRoute(
-        builder: (context) => const HomePage(), 
+        builder: (context) => const HomePage(),
       ),
     );
   }
@@ -49,14 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryDarkGreen,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Kaushan Script', 
+                      fontFamily: 'Kaushan Script',
                       color: accentLightGreen,
                     ),
                     children: <TextSpan>[
@@ -78,14 +79,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontStyle: FontStyle.italic,
-                          fontFamily: 'Kaushan Script', 
+                          fontFamily: 'Kaushan Script',
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 32.0),              
+              const SizedBox(height: 32.0),
               const Text(
                 'SELAMAT DATANG KEMBALI!',
                 style: TextStyle(
@@ -105,24 +106,25 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 40.0),
 
               _buildTextField(
-                controller: _emailController, 
+                controller: _emailController,
                 hintText: 'Email atau No. Ponsel',
                 prefixIcon: Icons.email_outlined,
-                isPassword: false, 
+                isPassword: false,
               ),
               const SizedBox(height: 16.0),
 
               _buildTextField(
-                controller: _passwordController, 
+                controller: _passwordController,
                 hintText: 'Password',
                 prefixIcon: Icons.lock_outline,
-                isPassword: _isPasswordHidden, 
-                suffixIcon: _isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                isPassword: _isPasswordHidden,
+                suffixIcon:
+                    _isPasswordHidden ? Icons.visibility : Icons.visibility_off,
                 onSuffixIconTap: () {
                   setState(() {
-                    _isPasswordHidden = !_isPasswordHidden; 
+                    _isPasswordHidden = !_isPasswordHidden;
                   });
-                }
+                },
               ),
               const SizedBox(height: 8.0),
 
@@ -135,15 +137,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 24.0,
                         width: 24.0,
                         child: Checkbox(
-                          value: _rememberMe, 
-                          onChanged: (bool? newValue) { 
+                          value: _rememberMe,
+                          onChanged: (bool? newValue) {
                             setState(() {
                               _rememberMe = newValue ?? false;
                             });
                           },
                           checkColor: primaryDarkGreen,
                           activeColor: Colors.white,
-                          side: const BorderSide(color: Colors.white, width: 2),
+                          side: const BorderSide(
+                              color: Colors.white, width: 2),
                         ),
                       ),
                       const SizedBox(width: 8.0),
@@ -158,7 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ForgotPasswordScreen(),
+                          builder: (context) =>
+                              const ForgotPasswordScreen(),
                         ),
                       );
                     },
@@ -172,10 +176,11 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24.0),
 
               ElevatedButton(
-                onPressed: () => _attemptLogin(context), 
+                onPressed: () => _attemptLogin(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: accentLightGreen,
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -200,41 +205,53 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16.0),
 
-              // Tombol Google & Facebook 
-            Row(
+              // Tombol Google & Facebook
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   _buildSocialButton(
-                    icon: Icons.g_mobiledata, 
+                    icon: Icons.g_mobiledata,
                     color: const Color.fromARGB(255, 94, 29, 29),
                   ),
-                  
                   _buildSocialButton(
                     icon: Icons.facebook,
-                    color: Colors.blue[800]!, 
+                    color: Colors.blueAccent,
                   ),
                 ],
               ),
               const SizedBox(height: 40.0),
 
+              // >>> REVISI: "Belum punya akun? Daftar di sini" bisa diklik <<<
               Center(
-                child: RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Belum punya akun? ',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
                     ),
-                    children: <TextSpan>[
-                      const TextSpan(text: 'Belum punya akun? '),
-                      TextSpan(
-                        text: 'Daftar di sini',
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Daftar di sini',
                         style: TextStyle(
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: accentLightGreen,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -250,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required IconData prefixIcon,
     IconData? suffixIcon,
     bool isPassword = false,
-    VoidCallback? onSuffixIconTap, 
+    VoidCallback? onSuffixIconTap,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -258,26 +275,30 @@ class _LoginScreenState extends State<LoginScreen> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: TextField(
-        controller: controller, 
+        controller: controller,
         obscureText: isPassword,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: const TextStyle(color: Colors.grey),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
-          
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 16.0),
           prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 8.0),
+            padding:
+                const EdgeInsets.only(left: 16.0, right: 8.0),
             child: Icon(prefixIcon, color: Colors.grey),
           ),
-          
           suffixIcon: suffixIcon != null
-              ? GestureDetector( 
+              ? GestureDetector(
                   onTap: onSuffixIconTap,
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Icon(suffixIcon, color: primaryDarkGreen), 
+                    padding:
+                        const EdgeInsets.only(right: 16.0),
+                    child: Icon(
+                      suffixIcon,
+                      color: primaryDarkGreen,
+                    ),
                   ),
                 )
               : null,
@@ -287,17 +308,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildSocialButton({
-    required IconData icon, 
+    required IconData icon,
     required Color color,
   }) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 8.0),
         child: ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white, 
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            backgroundColor: Colors.white,
+            padding:
+                const EdgeInsets.symmetric(vertical: 12.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
