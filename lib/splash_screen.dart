@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'landing_page.dart';
+import 'main.dart'; // supaya bisa pakai LandingRoute
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -18,14 +18,8 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            transitionDuration: Duration(milliseconds: 400),
-            pageBuilder: (_, animation, __) =>
-                FadeTransition(opacity: animation, child: const LandingPage()),
-          ),
-        );
+        // Saat layar di-tap, pindah ke LandingPage via route
+        Navigator.pushReplacementNamed(context, LandingRoute);
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF163822),
@@ -34,7 +28,7 @@ class SplashScreen extends StatelessWidget {
           height: double.infinity,
           decoration: const BoxDecoration(gradient: _bgGradient),
 
-          // LOGO BENAR-BENAR DI TENGAH
+          // LOGO DI TENGAH
           child: const Center(
             child: _Logo(),
           ),

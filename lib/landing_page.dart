@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'main.dart'; // supaya bisa pakai LoginRoute
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -60,7 +61,8 @@ class LandingPage extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        // ke halaman login
+                        Navigator.pushReplacementNamed(context, LoginRoute);
                       },
                       borderRadius: BorderRadius.circular(24),
                       child: Container(
@@ -109,7 +111,7 @@ class LandingPage extends StatelessWidget {
 
                 const SizedBox(height: 40),
 
-                // LOGO TANAMAN — DIPOSISIKAN TEPAT DI TENGAH
+                // LOGO TANAMAN
                 Center(
                   child: Column(
                     children: [
@@ -119,7 +121,6 @@ class LandingPage extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            // ladang melengkung
                             Positioned(
                               bottom: 16,
                               child: Container(
@@ -151,12 +152,13 @@ class LandingPage extends StatelessWidget {
 
                 const Spacer(),
 
-                // TOMBOL — LEBIH BESAR
+                // TOMBOL
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/login');
+                      // ke halaman login
+                      Navigator.pushReplacementNamed(context, LoginRoute);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: buttonBg,
@@ -209,7 +211,7 @@ class _FieldPainter extends CustomPainter {
         size.height * 0.45,
         size.width * 0.5,
         size.height * 0.8,
-      );                                                                                                                          
+      );
     final path2 = Path()
       ..moveTo(size.width * 0.5, size.height * 0.8)
       ..quadraticBezierTo(
