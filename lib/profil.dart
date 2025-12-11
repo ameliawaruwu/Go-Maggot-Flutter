@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'komponen-navbar.dart'; // Import Navbar
-import 'bantuan.dart'; // Import halaman Bantuan (pastikan file ini ada/dibuat)
-// import 'faq.dart';     // Import halaman FAQ (pastikan file ini ada/dibuat)
+import 'bantuan.dart';         // Halaman Bantuan
+import 'faq_page.dart';        // Halaman FAQ
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Color darkGreenBg = const Color(0xFF385E39);  // Hijau tua background
+    final Color darkGreenBg = const Color(0xFF385E39);   // Hijau tua background
     final Color lightGreenBtn = const Color(0xFF6C856C); // Hijau pudar untuk tombol Pesanan/Ulasan
     final Color whiteCard = const Color(0xFFFFFFFF);
     final Color darkButton = const Color(0xFF1B3022);    // Hijau gelap tombol Logout
 
     return Scaffold(
-      backgroundColor: darkGreenBg, 
-      
+      backgroundColor: darkGreenBg,
+
       // --- HEADER APPBAR ---
       appBar: AppBar(
-        backgroundColor: Colors.transparent, 
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Profil Saya", // Bahasa Indonesia
+          "Profil Saya",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: false, 
+        centerTitle: false,
       ),
 
       // --- BODY ---
@@ -48,26 +48,30 @@ class ProfilePage extends StatelessWidget {
                       height: 80,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white, 
+                        color: Colors.white,
                       ),
                       child: ClipOval(
                         child: Image.asset(
                           'assets/profile_pic.png',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return Icon(Icons.person, size: 50, color: Colors.grey.shade400);
+                            return Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.grey,
+                            );
                           },
                         ),
                       ),
                     ),
                     const SizedBox(width: 20),
                     // Teks Nama & Email (User Login)
-                    Expanded( // Gunakan Expanded agar teks panjang tidak overflow
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            "Riri ", // Nama User
+                            "Riri",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -76,7 +80,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            "riri@example.gmail.com", // Email User
+                            "riri@example.gmail.com",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -90,12 +94,16 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
 
-                // Baris Tombol Pesanan & Ulasan (Bahasa Indonesia)
+                // Baris Tombol Pesanan & Ulasan
                 Row(
                   children: [
-                    Expanded(child: _buildHeaderButton("Pesanan", lightGreenBtn)),
+                    Expanded(
+                      child: _buildHeaderButton("Pesanan", lightGreenBtn),
+                    ),
                     const SizedBox(width: 15),
-                    Expanded(child: _buildHeaderButton("Ulasan", lightGreenBtn)), 
+                    Expanded(
+                      child: _buildHeaderButton("Ulasan", lightGreenBtn),
+                    ),
                   ],
                 ),
               ],
@@ -106,7 +114,12 @@ class ProfilePage extends StatelessWidget {
           // 2. BAGIAN BODY (Kartu Putih Melengkung)
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(top: 30, left: 24, right: 24, bottom: 20),
+              padding: const EdgeInsets.only(
+                top: 30,
+                left: 24,
+                right: 24,
+                bottom: 20,
+              ),
               decoration: BoxDecoration(
                 color: whiteCard,
                 borderRadius: const BorderRadius.only(
@@ -116,37 +129,40 @@ class ProfilePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // List Menu (Bahasa Indonesia & Navigasi)
-                  _buildMenuItem(context, "Akun Saya", null), // null = belum ada halaman
+                  // List Menu
+                  _buildMenuItem(context, "Akun Saya", null),
                   _buildMenuItem(context, "Notifikasi", null),
                   _buildMenuItem(context, "Bahasa", null),
-                  
+
                   // Menu dengan Navigasi Khusus
                   _buildMenuItem(context, "Bantuan", () {
-                    // Navigasi ke Halaman Bantuan
                     Navigator.push(
-                      context, 
-                      MaterialPageRoute(builder: (context) => const BantuanPage())
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BantuanPage(),
+                      ),
                     );
                   }),
-                  
+
                   _buildMenuItem(context, "FAQ", () {
-                    // Navigasi ke Halaman FAQ
-                    // Navigator.push(
-                    //   context, 
-                    //   MaterialPageRoute(builder: (context) => const FaqPage())
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FAQPage(),
+                      ),
+                    );
                   }),
 
-                  const Spacer(), 
+                  const Spacer(),
 
                   // Tombol Keluar (Logout)
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Logika Logout (Misal kembali ke LoginScreen)
-                        Navigator.pushReplacementNamed(context, '/'); // Asumsi '/' adalah LoginRoute
+                        // Saat ini diarahkan ke route '/'
+                        // (di app-mu ini adalah layar awal/Splash)
+                        Navigator.pushReplacementNamed(context, '/');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: darkButton,
@@ -155,10 +171,16 @@ class ProfilePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Text("KELUAR", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        "KELUAR",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 10), 
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -193,14 +215,18 @@ class ProfilePage extends StatelessWidget {
   }
 
   // WIDGET ITEM MENU (Dengan Navigasi)
-  Widget _buildMenuItem(BuildContext context, String text, VoidCallback? onTap) {
-    return InkWell( // Bungkus dengan InkWell agar bisa diklik
-      onTap: onTap, 
+  Widget _buildMenuItem(
+    BuildContext context,
+    String text,
+    VoidCallback? onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: Colors.black12, width: 1), 
+            bottom: BorderSide(color: Colors.black12, width: 1),
           ),
         ),
         padding: const EdgeInsets.only(bottom: 10),
@@ -212,10 +238,14 @@ class ProfilePage extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1B3022), 
+                color: Color(0xFF1B3022),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black87),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.black87,
+            ),
           ],
         ),
       ),

@@ -8,6 +8,8 @@ import 'keranjang.dart';
 import 'pembayaran.dart';
 import 'feedback.dart';
 import 'home_page.dart';
+import 'faq_page.dart';
+
 
 // Route
 const String LoginRoute = '/';
@@ -18,6 +20,7 @@ const String PaymentRoute = '/payment';
 const String FeedbackRoute = '/feedback';
 const String HomeRoute = '/home';
 const String EdukasiRoute = '/edukasi';
+const String FaqRoute      = '/faq'; 
 
 void main() {
   runApp(const MyApp());
@@ -52,6 +55,7 @@ class MyApp extends StatelessWidget {
         FeedbackRoute: (context) => const FeedbackPage(),
         HomeRoute: (context) => const HomePage(),
         EdukasiRoute: (context) => const EdukasiPage(),
+        FaqRoute:      (context) => const FAQPage(), 
       },
     );
   }
