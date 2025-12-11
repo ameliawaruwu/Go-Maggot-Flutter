@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'product.dart';
+
 class CustomBottomNavBar extends StatelessWidget {
   final int indexSelected;
 
@@ -10,54 +11,62 @@ class CustomBottomNavBar extends StatelessWidget {
   });
 
   void _onNavBarTap(BuildContext context, int index) {
+    // Kalau tab yang aktif diklik lagi, tidak usah navigasi ulang
     if (index == indexSelected) return;
+
     switch (index) {
-      case 0:
+      case 0: // Beranda
         Navigator.pushReplacementNamed(context, HomeRoute);
         break;
-      
-      case 1:
+
+      case 1: // Produk
         Navigator.pushReplacementNamed(context, ProductRoute);
         break;
-      
-      case 2:
+
+      case 2: // Komunitas
+        Navigator.pushReplacementNamed(context, ForumRoute);
         break;
 
-      case 3:
+      case 3: // Edukasi
         Navigator.pushReplacementNamed(context, EdukasiRoute);
         break;
-      
-      case 4:
+
+      case 4: // Profil
         Navigator.pushReplacementNamed(context, ProfileRoute);
         break;
     }
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, int index) {
+  Widget _buildNavItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    int index,
+  ) {
     final isSelected = index == indexSelected;
-    final selectedColor = const Color(0xFF6B8E23); 
-    final unselectedColor = Colors.grey;          
-    final primaryDarkGreen = const Color(0xFF2C4A34); 
+    const selectedColor = Color(0xFF6B8E23); // hijau olive
+    const unselectedColor = Colors.grey;
 
     return InkWell(
-      onTap: () => _onNavBarTap(context, index), 
+      onTap: () => _onNavBarTap(context, index),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center, 
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
               color: isSelected ? selectedColor : unselectedColor,
-              size: 24, 
+              size: 24,
             ),
             Text(
               label,
               style: TextStyle(
-                fontSize: 10, // Ukuran font diperkecil sedikit agar muat
+                fontSize: 10,
                 color: isSelected ? selectedColor : unselectedColor,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontWeight:
+                    isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ],
@@ -67,16 +76,16 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) { 
-    final primaryDarkGreen = const Color(0xFF2C4A34); 
+  Widget build(BuildContext context) {
+    const primaryDarkGreen = Color(0xFF2C4A34);
 
     return Container(
-      height: 70, 
+      height: 70,
       decoration: BoxDecoration(
-        color: primaryDarkGreen, 
+        color: primaryDarkGreen,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20), 
-          topRight: Radius.circular(20), 
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
