@@ -8,22 +8,21 @@ class GaleriPage extends StatefulWidget {
 }
 
 class _GaleriPageState extends State<GaleriPage> {
-  // --- PALET WARNA ---
   final Color primaryDarkGreen = const Color(0xFF385E39); // Hijau Tua (Header)
   final Color lightCardGreen = const Color(0xFFE4EDE5);   // Hijau Pucat (Body)
   final Color accentLightGreen = const Color(0xFF6E9E4F); // Hijau Aksen
 
-  // Data Dummy Gambar (Ganti dengan path asset kamu)
+  
   final List<String> listGambar1 = [
-    'assets/Bibit-remove_bg.png',
-    'assets/maggot_removebg.png',
-    'assets/kompos_remove_bg.png',
+    'assets/proses pengeringan maggot.png',
+    'assets/pengeringanmanggot.jpg',
+    'assets/proses pengeringan maggot.png',
   ];
 
   final List<String> listGambar2 = [
-    'assets/images/article_sample.png', // Pastikan asset ini ada
-    'assets/Kandang.png',
-    'assets/Bundling_Maggot.png',
+    'assets/pakan ayam.jpg', 
+    'assets/pemberian pakan ayam.jpg',
+    'assets/pakan ayam.jpg',
   ];
 
   @override
@@ -124,9 +123,9 @@ class _GaleriPageState extends State<GaleriPage> {
         ),
         const SizedBox(height: 15),
 
-        // Panggil Widget Carousel Buatan Sendiri
+        
         SizedBox(
-          height: 220, // Tinggi area slider
+          height: 220, 
           child: _GalleryCarousel(images: images, primaryColor: primaryDarkGreen),
         ),
       ],
@@ -134,7 +133,6 @@ class _GaleriPageState extends State<GaleriPage> {
   }
 }
 
-// --- WIDGET CAROUSEL (SLIDER) ---
 class _GalleryCarousel extends StatefulWidget {
   final List<String> images;
   final Color primaryColor;
@@ -153,7 +151,7 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // AREA GAMBAR (BISA DIGESER)
+        
         Expanded(
           child: PageView.builder(
             controller: _pageController,
@@ -164,7 +162,7 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
               });
             },
             itemBuilder: (context, index) {
-              // Efek Scale agar gambar aktif lebih besar
+              
               final bool isActive = index == _currentIndex;
               
               return AnimatedContainer(
@@ -185,9 +183,8 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
-                      // INTERAKSI KLIK GAMBAR
                       onTap: () {
-                        // Tampilkan Dialog Zoom Gambar
+                      
                         showDialog(
                           context: context, 
                           builder: (_) => Dialog(
@@ -210,7 +207,7 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
                               child: const Icon(Icons.broken_image, color: Colors.grey, size: 50),
                             ),
                           ),
-                          // Overlay Gradient Halus di Bawah
+                          
                           Positioned(
                             bottom: 0,
                             left: 0,
@@ -241,7 +238,7 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
         
         const SizedBox(height: 10),
 
-        // INDIKATOR TITIK (DOTS)
+        
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(widget.images.length, (index) {
@@ -249,7 +246,7 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: isActive ? 20 : 8, // Titik aktif lebih panjang
+              width: isActive ? 20 : 8,
               height: 8,
               decoration: BoxDecoration(
                 color: isActive ? widget.primaryColor : Colors.grey.shade400,

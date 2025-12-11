@@ -7,8 +7,58 @@ const Color primaryDarkGreen = Color(0xFF385E39);
 const Color accentLightGreen = Color(0xFF6E9E4F);
 
 
-class LoginScreen extends StatelessWidget {
+// --- PERUBAHAN UTAMA: UBAH DARI StatelessWidget KE StatefulWidget ---
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // State untuk 1. Input Validation
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  
+  // State untuk 2. Remember Me
+  bool _rememberMe = false; 
+
+  // State untuk 3. Toggle Lihat Password
+  bool _isPasswordHidden = true;
+
+  // --- FUNGSI VALIDASI LOGIN ---
+  void _attemptLogin(BuildContext context) {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      // 1. Pengguna wajib login (muncul notif harus login)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email dan Password wajib diisi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // --- ASUMSI LOGIN BERHASIL (GANTI DENGAN LOGIKA OTENTIKASI NYATA) ---
+    // Jika validasi sukses, navigasi ke HomePage
+    Navigator.pushReplacement(
+      context, 
+      MaterialPageRoute(
+        builder: (context) => const HomePage(), 
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,31 +114,47 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40.0),
 
+              // TEXT FIELD EMAIL
               _buildTextField(
+                controller: _emailController, // Tambahkan controller
                 hintText: 'Email atau No. Ponsel',
                 prefixIcon: Icons.email_outlined,
+                isPassword: false, // Pastikan isPassword false untuk email
               ),
               const SizedBox(height: 16.0),
 
+              // TEXT FIELD PASSWORD (Diperbarui)
               _buildTextField(
+                controller: _passwordController, // Tambahkan controller
                 hintText: 'Password',
                 prefixIcon: Icons.lock_outline,
-                suffixIcon: Icons.visibility,
-                isPassword: true,
+                isPassword: _isPasswordHidden, // Menggunakan state
+                suffixIcon: _isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                onSuffixIconTap: () {
+                  setState(() {
+                    _isPasswordHidden = !_isPasswordHidden; // Toggle state
+                  });
+                }
               ),
               const SizedBox(height: 8.0),
 
+              // CHECKBOX DAN LUPA PASSWORD (Diperbarui)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
+                      // CHECKBOX REMEMBER ME (Diperbarui)
                       SizedBox(
                         height: 24.0,
                         width: 24.0,
                         child: Checkbox(
-                          value: false,
-                          onChanged: (bool? newValue) {},
+                          value: _rememberMe, // Menggunakan state
+                          onChanged: (bool? newValue) { // 2. Kotak remember bisa di klik
+                            setState(() {
+                              _rememberMe = newValue ?? false;
+                            });
+                          },
                           checkColor: primaryDarkGreen,
                           activeColor: Colors.white,
                           side: const BorderSide(color: Colors.white, width: 2),
@@ -112,16 +178,9 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24.0),
 
-              // Tombol MASUK 
+              // Tombol MASUK (Diperbarui)
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(), 
-                    ),
-                  );
-                },
+                onPressed: () => _attemptLogin(context), // Panggil fungsi validasi
                 style: ElevatedButton.styleFrom(
                   backgroundColor: accentLightGreen,
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -153,15 +212,13 @@ class LoginScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  // Tombol Google (Ikon G)
                   _buildSocialButton(
-                    icon: Icons.g_mobiledata, // Menggunakan ikon Material Google
+                    icon: Icons.g_mobiledata,
                     color: Colors.black,
                   ),
                   
-                  // Tombol Facebook (Ikon F)
                   _buildSocialButton(
-                    icon: Icons.facebook, // Menggunakan ikon Material Facebook
+                    icon: Icons.facebook,
                     color: Colors.blue[800]!, 
                   ),
                 ],
@@ -196,12 +253,14 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // Widget pembantu untuk TextFormField (TETAP SAMA)
+  // Widget pembantu untuk TextFormField (Disesuaikan untuk menerima controller & onTap)
   Widget _buildTextField({
+    required TextEditingController controller,
     required String hintText,
     required IconData prefixIcon,
     IconData? suffixIcon,
     bool isPassword = false,
+    VoidCallback? onSuffixIconTap, // Tambahkan onTap untuk ikon suffix
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -209,6 +268,7 @@ class LoginScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: TextField(
+        controller: controller, // Menggunakan controller
         obscureText: isPassword,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
@@ -222,10 +282,14 @@ class LoginScreen extends StatelessWidget {
             child: Icon(prefixIcon, color: Colors.grey),
           ),
           
+          // Ikon Suffix dengan onTap
           suffixIcon: suffixIcon != null
-              ? Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(suffixIcon, color: primaryDarkGreen), 
+              ? GestureDetector( // Menggunakan GestureDetector agar ikon bisa diklik
+                  onTap: onSuffixIconTap,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Icon(suffixIcon, color: primaryDarkGreen), 
+                  ),
                 )
               : null,
         ),
@@ -234,9 +298,10 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _buildSocialButton({
-      required IconData icon, 
-      required Color color,
+    required IconData icon, 
+    required Color color,
   }) {
+    // KODE INI TETAP SAMA
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
