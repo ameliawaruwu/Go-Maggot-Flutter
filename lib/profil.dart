@@ -52,7 +52,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                       child: ClipOval(
                         child: Image.asset(
-                          'assets/images/profile_pic.png',
+                          'assets/profile_pic.png',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(Icons.person, size: 50, color: Colors.grey.shade400);
@@ -67,7 +67,7 @@ class ProfilePage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            "Amelia Waruwu", // Nama User
+                            "Riri ", // Nama User
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -76,7 +76,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            "amelia@student.telkomuniversity.ac.id", // Email User
+                            "riri@example.gmail.com", // Email User
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,

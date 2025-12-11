@@ -45,20 +45,27 @@ class ArtikelDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. GAMBAR UTAMA
+            // 1. GAMBAR UTAMA (SUDAH DIPERBAIKI)
             Container(
               height: 250,
               width: double.infinity,
               margin: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.grey.shade300, // Placeholder
-                // image: const DecorationImage(image: AssetImage('assets/images/article_sample.png'), fit: BoxFit.cover,),
+                color: Colors.grey.shade200, // Warna cadangan jika gambar gagal muat
               ),
+              // Menggunakan ClipRRect agar sudut gambar melengkung
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: const Center(
-                  child: Icon(Icons.image, size: 80, color: Colors.grey),
+                child: Image.asset(
+                  'assets/edukasi.jpeg', // Ganti dengan nama file gambar kamu
+                  fit: BoxFit.cover, // Agar gambar memenuhi area
+                  errorBuilder: (context, error, stackTrace) {
+                    // Jika gambar tidak ditemukan, tampilkan ikon placeholder
+                    return const Center(
+                      child: Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                    );
+                  },
                 ),
               ),
             ),

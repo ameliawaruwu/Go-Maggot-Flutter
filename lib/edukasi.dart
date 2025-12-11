@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'komponen-navbar.dart'; 
-import 'artikel_detail.dart'; // <--- 1. WAJIB ADA: Import halaman tujuan
+import 'artikel_detail.dart'; 
 
 class EdukasiPage extends StatelessWidget {
   const EdukasiPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // --- PALET WARNA ---
     const Color primaryDarkGreen = Color(0xFF385E39); 
     const Color lightCardGreen = Color(0xFFE4EDE5); 
     const Color limeText = Color(0xFF7BBC38); 
@@ -16,7 +15,6 @@ class EdukasiPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: lightCardGreen, 
       
-      // --- HEADER ---
       appBar: AppBar(
         backgroundColor: primaryDarkGreen,
         elevation: 0,
@@ -64,7 +62,6 @@ class EdukasiPage extends StatelessWidget {
         ),
       ),
 
-      // --- BODY ---
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         child: Column(
@@ -80,13 +77,16 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
 
-            // Video Thumbnail
             Container(
               height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 color: Colors.black26, 
+                image: const DecorationImage(
+                  image: AssetImage('assets/edukasi.jpeg'), 
+                  fit: BoxFit.cover,
+                ),
               ),
               child: Center(
                 child: Container(
@@ -101,7 +101,6 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
 
-            // Divider
             const Row(
               children: [
                 Expanded(child: Divider(color: primaryDarkGreen, thickness: 1)),
@@ -117,7 +116,6 @@ class EdukasiPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // GRID ARTIKEL
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -129,7 +127,6 @@ class EdukasiPage extends StatelessWidget {
               ),
               itemCount: 6,
               itemBuilder: (context, index) {
-                // <--- 2. PENTING: Kirim 'context' ke dalam fungsi builder
                 return _buildArticleCard(context, Colors.white, buttonGreen, primaryDarkGreen);
               },
             ),
@@ -143,8 +140,6 @@ class EdukasiPage extends StatelessWidget {
     );
   }
 
-  // WIDGET KARTU ARTIKEL
-  // <--- 3. PENTING: Tambahkan parameter 'BuildContext context' di sini
   Widget _buildArticleCard(BuildContext context, Color cardBg, Color btnColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -168,8 +163,11 @@ class EdukasiPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: Colors.grey.shade200,
+                image: const DecorationImage(
+                  image: AssetImage('assets/edukasi.jpeg'), 
+                  fit: BoxFit.cover,
+                ),
               ),
-              child: const Center(child: Icon(Icons.image, color: Colors.grey)),
             ),
           ),
           const SizedBox(height: 8),
@@ -184,12 +182,10 @@ class EdukasiPage extends StatelessWidget {
             ),
           ),
           
-          // TOMBOL SELENGKAPNYA
           SizedBox(
             height: 24,
             child: ElevatedButton(
               onPressed: () {
-                // <--- 4. LOGIKA NAVIGASI: Pindah ke Artikel Detail
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ArtikelDetailPage()),

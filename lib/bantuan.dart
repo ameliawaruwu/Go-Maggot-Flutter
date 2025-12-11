@@ -5,24 +5,21 @@ class BantuanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // --- PALET WARNA (Sama dengan Profil) ---
-    final Color darkGreenBg = const Color(0xFF385E39); // Hijau Tua (Background Header & Body)
-    final Color whiteCard = const Color(0xFFFFFFFF);   // Putih (Konten Bawah)
-    final Color lightGreyBtn = const Color(0xFFF5F5F5); // Abu-abu muda untuk tombol kotak
+    final Color darkGreenBg = const Color(0xFF385E39);
+    final Color whiteCard = const Color(0xFFFFFFFF);   
+    final Color lightGreyBtn = const Color(0xFFF5F5F5); 
 
     return Scaffold(
-      backgroundColor: darkGreenBg, // Background Utama Hijau Tua
+      backgroundColor: darkGreenBg, 
       
-      // --- HEADER (Custom AppBar Manual) ---
       body: Column(
         children: [
-          // 1. BAGIAN ATAS (Header & Pencarian) - Background Hijau
           Padding(
             padding: const EdgeInsets.only(top: 50, left: 24, right: 24, bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Tombol Back & Judul
+                
                 Row(
                   children: [
                     IconButton(
@@ -44,18 +41,18 @@ class BantuanPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 
-                // Sapaan
+               
                 const Text(
                   "Halo, Apa ada yang bisa dibantu?",
                   style: TextStyle(
-                    fontSize: 22, // Sedikit lebih besar
+                    fontSize: 22, 
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // Search Bar (Putih agar kontras di atas hijau)
+                
                 TextField(
                   decoration: InputDecoration(
                     hintText: "Cari topik bantuan...",
@@ -74,7 +71,7 @@ class BantuanPage extends StatelessWidget {
             ),
           ),
 
-          // 2. BAGIAN ISI (Kartu Putih Melengkung) - Sama seperti Profil
+          
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(top: 30, left: 24, right: 24),
@@ -87,11 +84,11 @@ class BantuanPage extends StatelessWidget {
                 ),
               ),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 30), // Padding bawah agar scroll enak
+                padding: const EdgeInsets.only(bottom: 30), 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Tombol Kotak-kotak (Track, Cancel, etc)
+            
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -103,13 +100,13 @@ class BantuanPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    // Tombol Panjang (Ajukan Pengembalian)
+                    
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: lightGreyBtn, // Abu muda
+                          backgroundColor: lightGreyBtn, 
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -124,7 +121,7 @@ class BantuanPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
 
-                    // List Pertanyaan (FAQ) - Teks Hitam karena background putih
+                   
                     const Text(
                       "Pertanyaan Populer",
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
