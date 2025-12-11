@@ -14,6 +14,7 @@ import 'home_page.dart';
 import 'splash_screen.dart';
 import 'landing_page.dart';
 import 'forum_chat.dart';
+import 'faq_page.dart';
 
 // ================= ROUTE NAMES =================
 
@@ -36,6 +37,7 @@ const String ProfileRoute  = '/profil';
 // lainnya
 const String PaymentRoute  = '/payment';
 const String FeedbackRoute = '/feedback';
+const String FaqRoute      = '/faq';
 
 void main() {
   runApp(const MyApp());
@@ -80,6 +82,7 @@ class MyApp extends StatelessWidget {
         // lainnya
         PaymentRoute:  (context) => const PaymentPage(),
         FeedbackRoute: (context) => const FeedbackPage(),
+        FaqRoute:      (context) => const FAQPage(),
       },
     );
   }
