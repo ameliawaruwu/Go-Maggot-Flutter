@@ -1,29 +1,34 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart'; 
+import 'komponen-navbar.dart';
 import 'galeri.dart';
-import 'notifikasi.dart'; // <--- 1. IMPORT FILE NOTIFIKASI
+import 'notifikasi.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  // warna yang dipakai berulang
+  static const Color primaryDarkGreen = Color(0xFF385E39);
+  static const Color accentLightGreen = Color(0xFF6E9E4F);
+  static const Color secondaryTextColor = Colors.white;
+
   @override
   Widget build(BuildContext context) {
-    // Definisi Warna Lokal
-    const Color primaryDarkGreen = Color(0xFF385E39);
-    const Color accentLightGreen = Color(0xFF6E9E4F);
-    const Color secondaryTextColor = Colors.white;
-
     return Scaffold(
       backgroundColor: Colors.white,
-      
-      // --- APP BAR ---
+
+      // APP BAR
       appBar: AppBar(
         backgroundColor: primaryDarkGreen,
-        automaticallyImplyLeading: false, 
+        automaticallyImplyLeading: false,
         elevation: 0,
-        toolbarHeight: 90, 
+        toolbarHeight: 90,
         flexibleSpace: Container(
-          padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 10),
+          padding: const EdgeInsets.only(
+            top: 40,
+            left: 20,
+            right: 20,
+            bottom: 10,
+          ),
           decoration: const BoxDecoration(
             color: primaryDarkGreen,
             borderRadius: BorderRadius.only(
@@ -35,14 +40,14 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo Teks
+              // Logo teks GoMaggot
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 28, 
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Kaushan Script', 
-                    color: accentLightGreen, 
+                    fontFamily: 'Kaushan Script',
+                    color: accentLightGreen,
                   ),
                   children: <TextSpan>[
                     TextSpan(text: 'Go'),
@@ -51,28 +56,36 @@ class HomePage extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontStyle: FontStyle.italic,
-                        fontFamily: 'Kaushan Script', 
+                        fontFamily: 'Kaushan Script',
                       ),
                     ),
                   ],
                 ),
               ),
-              // Ikon Kanan
+
+              // Icon search + notifikasi
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.search, color: secondaryTextColor, size: 30),
+                    icon: const Icon(
+                      Icons.search,
+                      color: secondaryTextColor,
+                      size: 30,
+                    ),
                     onPressed: () {},
                   ),
-                  
-                  // --- 2. UPDATE ICON NOTIFIKASI DI SINI ---
                   IconButton(
-                    icon: const Icon(Icons.notifications_none, color: secondaryTextColor, size: 30),
+                    icon: const Icon(
+                      Icons.notifications_none,
+                      color: secondaryTextColor,
+                      size: 30,
+                    ),
                     onPressed: () {
-                      // Pindah ke Halaman Notifikasi
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const NotifikasiPage()),
+                        MaterialPageRoute(
+                          builder: (context) => const NotifikasiPage(),
+                        ),
                       );
                     },
                   ),
@@ -82,78 +95,93 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      
+
       body: const HomeContent(),
-      
+
+      // indexSelected = 0 artinya tab "Home" di navbar yang aktif
       bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 0, 
+        indexSelected: 0,
       ),
     );
   }
 }
 
-// === KONTEN BERANDA (TIDAK ADA PERUBAHAN DI BAWAH INI) ===
+// ================== KONTEN BERANDA ======================
+
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
   static const Color primaryDarkGreen = Color(0xFF385E39);
   static const Color accentLightGreen = Color(0xFF6E9E4F);
-  static const Color secondaryTextColor = Colors.white; 
-  static const Color primaryTextColor = Colors.black; 
-  static const Color backgroundLightGreen = Color(0xFFE8F5E9); 
-  static const Color cardColor = Colors.white; 
+  static const Color secondaryTextColor = Colors.white;
+  static const Color primaryTextColor = Colors.black;
+  static const Color backgroundLightGreen = Color(0xFFE8F5E9);
+  static const Color cardColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildAboutMaggotSection(context),
-            const SizedBox(height: 20),
-            _buildTopProductsSection(context),
-            const SizedBox(height: 20),
-            _buildCultivationPromotion(context),
-            const SizedBox(height: 20),
-          ],
-        ),
-      );
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildAboutMaggotSection(context),
+          const SizedBox(height: 20),
+          _buildTopProductsSection(context),
+          const SizedBox(height: 20),
+          _buildCultivationPromotion(context),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
   }
 
   Widget _buildAboutMaggotSection(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: backgroundLightGreen,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 3)),],
-        ),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  'assets/maggot_removebg.png', 
-                  width: 100, 
-                  height: 100, 
-                  fit: BoxFit.cover,
-                  errorBuilder: (ctx, err, stack) => const Icon(Icons.image, size: 50, color: Colors.grey),
-                ),
-              ),
-              const SizedBox(width: 15),
-              const Expanded(
-                child: Text('Apa itu maggot?\nMaggot atau lebih sering disebut sebagai belatung, merupakan larva dari jenis lalat Black Soldier Fly (BSF).', 
-                  style: TextStyle(fontSize: 14, color: primaryTextColor, height: 1.4,), 
-                  textAlign: TextAlign.justify,
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: backgroundLightGreen,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
-      );
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              'assets/maggot_removebg.png',
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+              errorBuilder: (ctx, err, stack) =>
+                  const Icon(Icons.image, size: 50, color: Colors.grey),
+            ),
+          ),
+          const SizedBox(width: 15),
+          const Expanded(
+            child: Text(
+              'Apa itu maggot?\nMaggot atau lebih sering disebut sebagai belatung, '
+              'merupakan larva dari jenis lalat Black Soldier Fly (BSF).',
+              style: TextStyle(
+                fontSize: 14,
+                color: primaryTextColor,
+                height: 1.4,
+              ),
+              textAlign: TextAlign.justify,
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildTopProductsSection(BuildContext context) {
@@ -162,7 +190,14 @@ class HomeContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Produk Terlaris Bulan Ini!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryDarkGreen,),),
+          const Text(
+            'Produk Terlaris Bulan Ini!',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: primaryDarkGreen,
+            ),
+          ),
           const SizedBox(height: 15),
           GridView.count(
             crossAxisCount: 2,
@@ -170,11 +205,11 @@ class HomeContent extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,
-            childAspectRatio: 1.0, 
+            childAspectRatio: 1.0,
             children: [
-              _buildProductItem('assets/Bibit-remove_bg.png'), 
+              _buildProductItem('assets/Bibit-remove_bg.png'),
               _buildProductItem('assets/Bundling_Maggot.png'),
-              _buildProductItem('assets/maggot_removebg.png'), 
+              _buildProductItem('assets/maggot_removebg.png'),
               _buildProductItem('assets/kompos_remove_bg.png'),
             ],
           ),
@@ -193,9 +228,10 @@ class HomeContent extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Image.asset(
-          imagePath, 
-          fit: BoxFit.contain, 
-          errorBuilder: (ctx, err, stack) => const Icon(Icons.image_not_supported, color: Colors.grey),
+          imagePath,
+          fit: BoxFit.contain,
+          errorBuilder: (ctx, err, stack) =>
+              const Icon(Icons.image_not_supported, color: Colors.grey),
         ),
       ),
     );
@@ -224,16 +260,34 @@ class HomeContent extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                colors: [
+                  Colors.black.withOpacity(0.6),
+                  Colors.transparent,
+                ],
               ),
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('Yuk budidaya maggot!', style: TextStyle(color: secondaryTextColor, fontSize: 22, fontWeight: FontWeight.bold,),),
+                Text(
+                  'Yuk budidaya maggot!',
+                  style: TextStyle(
+                    color: secondaryTextColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: 5),
-                Text('Mengenal lebih dalam seputar budidaya maggot yang mudah.', style: TextStyle(color: secondaryTextColor, fontSize: 14,), maxLines: 2, overflow: TextOverflow.ellipsis,),
+                Text(
+                  'Mengenal lebih dalam seputar budidaya maggot yang mudah.',
+                  style: TextStyle(
+                    color: secondaryTextColor,
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 SizedBox(height: 40),
               ],
             ),
@@ -245,14 +299,24 @@ class HomeContent extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const GaleriPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const GaleriPage(),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: accentLightGreen,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
-              child: const Text('selengkapnya', style: TextStyle(color: secondaryTextColor, fontWeight: FontWeight.bold),),
+              child: const Text(
+                'selengkapnya',
+                style: TextStyle(
+                  color: secondaryTextColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],
