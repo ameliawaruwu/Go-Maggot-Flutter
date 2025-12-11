@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 import 'home_page.dart';
 import 'forgot_password_screen.dart';
-import 'register.dart';
+import 'main.dart' show RegisterRoute;
 
 const String appName = 'GoMaggot';
 const Color primaryDarkGreen = Color(0xFF385E39);
@@ -35,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -56,24 +56,22 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: primaryDarkGreen,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Bagian logo
               Align(
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Kaushan Script',
                       color: accentLightGreen,
                     ),
-                    children: <TextSpan>[
-                      const TextSpan(text: 'Go'),
+                    children: const <TextSpan>[
+                      TextSpan(text: 'Go'),
                       TextSpan(
                         text: 'Maggot',
                         style: TextStyle(
@@ -86,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 32.0),
               const Text(
                 'SELAMAT DATANG KEMBALI!',
@@ -109,8 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailController,
                 hintText: 'Email atau No. Ponsel',
                 prefixIcon: Icons.email_outlined,
-                isPassword: false,
               ),
+
               const SizedBox(height: 16.0),
 
               _buildTextField(
@@ -126,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
               ),
+
               const SizedBox(height: 8.0),
 
               Row(
@@ -145,8 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           checkColor: primaryDarkGreen,
                           activeColor: Colors.white,
-                          side: const BorderSide(
-                              color: Colors.white, width: 2),
+                          side: const BorderSide(color: Colors.white, width: 2),
                         ),
                       ),
                       const SizedBox(width: 8.0),
@@ -161,8 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const ForgotPasswordScreen(),
+                          builder: (context) => const ForgotPasswordScreen(),
                         ),
                       );
                     },
@@ -173,14 +171,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 24.0),
 
               ElevatedButton(
                 onPressed: () => _attemptLogin(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: accentLightGreen,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -195,33 +193,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24.0),
 
-              const Center(
-                child: Text(
-                  'Atau masuk dengan',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 32.0),
 
-              // Tombol Google & Facebook
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  _buildSocialButton(
-                    icon: Icons.g_mobiledata,
-                    color: const Color.fromARGB(255, 94, 29, 29),
-                  ),
-                  _buildSocialButton(
-                    icon: Icons.facebook,
-                    color: Colors.blueAccent,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40.0),
-
-              // >>> REVISI: "Belum punya akun? Daftar di sini" bisa diklik <<<
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -235,12 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const RegisterScreen(),
-                          ),
-                        );
+                        Navigator.pushNamed(context, RegisterRoute);
                       },
                       child: const Text(
                         'Daftar di sini',
@@ -282,19 +251,16 @@ class _LoginScreenState extends State<LoginScreen> {
           hintText: hintText,
           hintStyle: const TextStyle(color: Colors.grey),
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 16.0),
+          contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
           prefixIcon: Padding(
-            padding:
-                const EdgeInsets.only(left: 16.0, right: 8.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 8.0),
             child: Icon(prefixIcon, color: Colors.grey),
           ),
           suffixIcon: suffixIcon != null
               ? GestureDetector(
                   onTap: onSuffixIconTap,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(right: 16.0),
+                    padding: const EdgeInsets.only(right: 16.0),
                     child: Icon(
                       suffixIcon,
                       color: primaryDarkGreen,
@@ -302,35 +268,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 )
               : null,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButton({
-    required IconData icon,
-    required Color color,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            padding:
-                const EdgeInsets.symmetric(vertical: 12.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            elevation: 3,
-          ),
-          child: Icon(
-            icon,
-            color: color,
-            size: 32,
-          ),
         ),
       ),
     );
