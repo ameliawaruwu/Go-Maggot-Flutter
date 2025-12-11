@@ -4,52 +4,82 @@ import 'main.dart';
 import 'detail_produk.dart'; 
 import 'komponen-navbar.dart'; // <--- JANGAN LUPA IMPORT INI
 
+// Konstanta untuk routing (jika digunakan)
+
+
+// --- MODEL DATA PRODUK (DITAMBAH PROPERTI CATEGORY) ---
 class Product {
   final String name;
   final String price;
   final String imagePath;
+  final String category; // PROPERTI BARU UNTUK FILTER
 
   Product({
     required this.name,
     required this.price,
     required this.imagePath,
+    required this.category, // HARUS DIISI
   });
 }
 
-// List data produk
-final List<Product> products = [
-  Product(name: "Bibit Maggot", price: "Rp 50.000", imagePath: "assets/Bibit-remove_bg.png"), 
-  Product(name: "Maggot Siap Pakai", price: "Rp 70.000", imagePath: "assets/maggot_removebg.png"),
-  Product(name: "Kompos Maggot", price: "Rp 25.000", imagePath: "assets/kompos_remove_bg.png"),
-  Product(name: "Kandang Maggot", price: "Rp 75.000", imagePath: "assets/Kandang.png"),
-  Product(name: "Paket Bundling Maggot", price: "Rp 170.000", imagePath: "assets/Bundling_Maggot.png"), 
-  Product(name: "Kompos Maggot", price: "Rp 25.000", imagePath: "assets/kompos_remove_bg.png"), 
+// List data produk (DITAMBAH KATEGORI)
+final List<Product> allProducts = [
+  Product(name: "Bibit Maggot", price: "Rp 50.000", imagePath: "assets/Bibit-remove_bg.png", category: "Maggot"), 
+  Product(name: "Maggot Siap Pakai", price: "Rp 70.000", imagePath: "assets/maggot_removebg.png", category: "Maggot"),
+  Product(name: "Kompos Maggot (Pupuk Organik)", price: "Rp 25.000", imagePath: "assets/kompos_remove_bg.png", category: "Pupuk"), 
+  Product(name: "Kandang Maggot", price: "Rp 75.000", imagePath: "assets/Kandang.png", category: "Kandang"),
+  Product(name: "Paket Bundling Maggot Starter", price: "Rp 170.000", imagePath: "assets/Bundling_Maggot.png", category: "Maggot"), 
+  Product(name: "Pupuk Cair Maggot", price: "Rp 40.000", imagePath: "assets/kompos_remove_bg.png", category: "Pupuk"), 
 ];
 
-// Halaman Utama Produk 
-class ProductPage extends StatelessWidget {
+
+// --- WIDGET HALAMAN UTAMA PRODUK (DIUBAH MENJADI STATEFUL) ---
+class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
 
-  // Widget untuk tombol Kategori (Maggot, Kandang, Pupuk) 
-  Widget _buildCategoryTab(BuildContext context, String title, bool isSelected) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.black12),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: isSelected ? Colors.green.shade800 : Colors.black87,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+  @override
+  State<ProductPage> createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  // State untuk Kategori yang dipilih
+  String selectedCategory = 'Maggot'; // Default saat pertama dibuka
+  
+  // Getter untuk menghasilkan list produk yang difilter
+  List<Product> get _filteredProducts {
+    return allProducts
+        .where((product) => product.category == selectedCategory)
+        .toList();
+  }
+
+  // Widget untuk tombol Kategori (SEKARANG INTERAKTIF)
+  Widget _buildCategoryTab(BuildContext context, String title) {
+    final isSelected = selectedCategory == title;
+      return Expanded(
+        child: GestureDetector( // Menambahkan GestureDetector
+          onTap: () {
+            setState(() {
+              selectedCategory = title; // Update state kategori saat diklik
+            });
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.white : const Color(0xFF688969), // Warna disesuaikan agar lebih mirip gambar
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: isSelected ? Colors.green.shade800 : Colors.transparent),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? Colors.green.shade800 : Colors.white,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
           ),
         ),
-      ),
     );
   }
 
@@ -114,6 +144,7 @@ class ProductPage extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
                         onPressed: () {
+                          // Menggunakan CartRoute yang sudah didefinisikan
                           Navigator.pushNamed(context, CartRoute);
                         },
                       ),
@@ -124,20 +155,20 @@ class ProductPage extends StatelessWidget {
             ),
           ),
           
-          // Tab Kategori
+          // Tab Kategori (Sudah Interaktif dan menggunakan state)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildCategoryTab(context, 'Maggot', true),
-                _buildCategoryTab(context, 'Kandang', false),
-                _buildCategoryTab(context, 'Pupuk', false),
+                _buildCategoryTab(context, 'Maggot'),
+                _buildCategoryTab(context, 'Kandang'),
+                _buildCategoryTab(context, 'Pupuk'),
               ],
             ),
           ),
           
-          // Grid Produk 
+          // Grid Produk (Menggunakan produk yang sudah di-filter)
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
@@ -154,18 +185,18 @@ class ProductPage extends StatelessWidget {
                   crossAxisCount: 2, 
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
-                  childAspectRatio: 0.75, 
+                  // childAspectRatio disesuaikan agar kartu lebih kecil
+                  childAspectRatio: 0.70, 
                 ),
-                itemCount: products.length,
+                itemCount: _filteredProducts.length,
                 itemBuilder: (context, index) {
-                  return ProductCard(product: products[index]);
+                  return ProductCard(product: _filteredProducts[index]);
                 },
               ),
             ),
           ),
           
           // Bottom Navigation Bar
-          // Pastikan komponen-navbar.dart sudah kamu update dengan logika Navigator
           const CustomBottomNavBar(
             indexSelected: 1, 
           ),
@@ -176,11 +207,30 @@ class ProductPage extends StatelessWidget {
 }
 
 
-// Widget Kartu Produk
-class ProductCard extends StatelessWidget {
+// --- WIDGET KARTU PRODUK (DIUBAH MENJADI STATEFUL) ---
+class ProductCard extends StatefulWidget {
   final Product product;
 
   const ProductCard({super.key, required this.product});
+
+  @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  // State untuk status favorit (ikon love)
+  bool isFavorite = false;
+
+  // Fungsi untuk menampilkan Notifikasi (SnackBar) saat ditambah ke keranjang
+  void _showCartNotification(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${widget.product.name} berhasil ditambahkan ke keranjang!'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green.shade700,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,12 +258,13 @@ class ProductCard extends StatelessWidget {
                   child: ClipRRect( 
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image.asset(
-                      product.imagePath, 
-                      height: 100,
+                      widget.product.imagePath, 
+                      // Tinggi gambar diperkecil
+                      height: 80, 
                       fit: BoxFit.contain, 
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          height: 100,
+                          height: 80, 
                           color: Colors.red.shade100,
                           child: const Center(
                             child: Text('❌ GAGAL', textAlign: TextAlign.center, style: TextStyle(fontSize: 10)),
@@ -226,7 +277,18 @@ class ProductCard extends StatelessWidget {
                 Positioned(
                   top: 0,
                   right: 0,
-                  child: Icon(Icons.favorite_border, color: Colors.grey.shade600),
+                  // Ikon Love interaktif
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isFavorite = !isFavorite;
+                      });
+                    },
+                    child: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? Colors.red : Colors.grey.shade600,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -234,7 +296,7 @@ class ProductCard extends StatelessWidget {
             
             // Nama Produk
             Text(
-              product.name,
+              widget.product.name,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -242,7 +304,7 @@ class ProductCard extends StatelessWidget {
             
             // Harga
             Text(
-              product.price,
+              widget.product.price,
               style: TextStyle(color: Colors.green.shade700, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
@@ -265,7 +327,7 @@ class ProductCard extends StatelessWidget {
                          Navigator.push(
                            context,
                            MaterialPageRoute(
-                             builder: (context) => ProductDetailPage(product: product),
+                             builder: (context) => ProductDetailPage(product: widget.product),
                            ),
                          );
                       },
@@ -281,15 +343,18 @@ class ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     
-                    // Tombol Add (+)
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade700,
-                        borderRadius: BorderRadius.circular(5),
+                    // Tombol Add (+) interaktif
+                    GestureDetector(
+                      onTap: () => _showCartNotification(context), 
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade700,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const Icon(Icons.add, color: Colors.white, size: 18),
                       ),
-                      child: const Icon(Icons.add, color: Colors.white, size: 18),
                     ),
                   ],
                 ),
