@@ -21,6 +21,7 @@ const String PaymentRoute = '/payment';
 const String FeedbackRoute = '/feedback';
 const String HomeRoute = '/home';
 const String EdukasiRoute = '/edukasi';
+const String RegisterRoute = '/register';
 
 void main() {
   runApp(const MyApp());
