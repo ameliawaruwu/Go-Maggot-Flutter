@@ -106,8 +106,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// ================== KONTEN BERANDA ======================
-
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 

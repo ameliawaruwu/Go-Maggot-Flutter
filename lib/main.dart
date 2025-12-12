@@ -16,9 +16,7 @@ import 'landing_page.dart';
 import 'forum_chat.dart';
 import 'faq_page.dart';
 
-// ================= ROUTE NAMES =================
 
-// pertama kali dibuka
 const String SplashRoute   = '/';
 const String LandingRoute  = '/landing';
 
@@ -58,8 +56,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      // urutan layar:
-      // Splash -> Landing -> Login -> (dst)
+     
       initialRoute: SplashRoute,
 
       routes: {

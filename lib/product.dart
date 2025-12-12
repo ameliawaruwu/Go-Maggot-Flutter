@@ -4,10 +4,7 @@ import 'main.dart';
 import 'detail_produk.dart'; 
 import 'komponen-navbar.dart'; 
 
-// Konstanta untuk routing (jika digunakan)
 
-
-// --- MODEL DATA PRODUK (DITAMBAH PROPERTI CATEGORY) ---
 class Product {
   final String name;
   final String price;
@@ -65,7 +62,7 @@ class _ProductPageState extends State<ProductPage> {
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white : const Color(0xFF688969), // Warna disesuaikan agar lebih mirip gambar
+              color: isSelected ? Colors.white : const Color(0xFF688969), 
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: isSelected ? Colors.green.shade800 : Colors.transparent),
             ),

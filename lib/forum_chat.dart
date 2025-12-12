@@ -1,45 +1,49 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart';
 
 class ForumChatPage extends StatelessWidget {
   const ForumChatPage({super.key});
 
-  // warna-warna utama
-  static const Color topBarColor = Color(0xFF6E8761);     
+  // --- PALET WARNA ---
+  static const Color topBarColor = Color(0xFF385E39);     
   static const Color pageBgColor = Color(0xFFE5EACB);     
   static const Color bubbleBgLight = Colors.white;
   static const Color bubbleBgSelf = Color(0xFF76A36A);    
-  static const Color bottomBarColor = Color(0xFF6E8761);
+  static const Color bottomBarColor = Color(0xFF385E39);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: pageBgColor,
+      
+      // --- HEADER CUSTOM ---
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
-        child: _buildTopBar(),
+        preferredSize: const Size.fromHeight(100), // Tinggi Header disesuaikan
+        child: _buildTopBar(context), // Kirim context untuk tombol back
       ),
+      
+      // --- BODY ---
       body: Column(
         children: [
           const SizedBox(height: 8),
           _buildDateChip(),
           const SizedBox(height: 8),
+          
+          // List Chat Mengisi Sisa Ruang
           const Expanded(
             child: _ChatList(),
           ),
+          
+          // Input Bar di Bawah
           const _ChatInputBar(),
         ],
       ),
 
-      // Komunitas = index 2 di CustomBottomNavBar kamu
-      bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 2,
-      ),
+      // CATATAN: bottomNavigationBar DIHAPUS agar halaman ini Full Screen tanpa menu bawah
     );
   }
 
-  // app bar custom mirip desain
-  Widget _buildTopBar() {
+  // --- WIDGET HEADER ---
+  Widget _buildTopBar(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         color: topBarColor,
@@ -49,44 +53,63 @@ class ForumChatPage extends StatelessWidget {
         ),
       ),
       padding: const EdgeInsets.only(
-        top: 28,
+        top: 45, // Jarak status bar
         left: 20,
         right: 20,
-        bottom: 18,
+        bottom: 20,
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Gomagzone',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Row Kiri: Tombol Back + Judul
+          Row(
+            children: [
+              // Tombol Back
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                ),
               ),
+              const SizedBox(width: 15),
+              
+              // Judul Halaman
+              const Text(
+                'Gomagzone',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          
+          // Icon Menu (Hiasan Kanan)
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              shape: BoxShape.circle,
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.menu_rounded,
-                size: 22,
-                color: topBarColor,
-              ),
+            child: const Icon(
+              Icons.menu_rounded,
+              size: 22,
+              color: topBarColor,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // chip tanggal "Jum, 23 Mei"
+  // Chip Tanggal
   Widget _buildDateChip() {
     return Center(
       child: Container(
@@ -108,19 +131,19 @@ class ForumChatPage extends StatelessWidget {
   }
 }
 
+// --- WIDGET DAFTAR CHAT ---
 class _ChatList extends StatelessWidget {
   const _ChatList();
 
   @override
   Widget build(BuildContext context) {
-    // daftar chat statis biar mirip desain
+    // Data Dummy Chat
     final messages = <_ChatMessage>[
       _ChatMessage(
         senderName: 'Bang Jay',
         isMe: false,
         avatarColor: Colors.brown,
-        text:
-            'Bapak-bapak maggot saya diem aja, ini kurang pakan apa kurang perhatian ya? 🤔🤔🤔🤔',
+        text: 'Bapak-bapak maggot saya diem aja, ini kurang pakan apa kurang perhatian ya? 🤔🤔🤔🤔',
         time: '10:02 AM',
       ),
       _ChatMessage(
@@ -134,8 +157,7 @@ class _ChatList extends StatelessWidget {
         senderName: 'Mamat sucipto',
         isMe: false,
         avatarColor: Colors.indigo,
-        text:
-            'Bisa jadi masuk angin, Pak. Udah dicek suhu wadahnya belum?😂😂😂😂',
+        text: 'Bisa jadi masuk angin, Pak. Udah dicek suhu wadahnya belum?😂😂😂😂',
         time: '10:09 AM',
       ),
       _ChatMessage(
@@ -149,16 +171,14 @@ class _ChatList extends StatelessWidget {
         senderName: 'Saya',
         isMe: true,
         avatarColor: ForumChatPage.bubbleBgSelf,
-        text:
-            'Haha infonya seru, Bapak-bapak!\nTetap semangat budidaya yaa ✨',
+        text: 'Haha infonya seru, Bapak-bapak!\nTetap semangat budidaya yaa ✨',
         time: '10:19 AM',
       ),
       _ChatMessage(
         senderName: 'Mang joko',
         isMe: false,
         avatarColor: Colors.blueGrey,
-        text:
-            'Siap Admin! Kalau maggot saya sukses, saya traktir teh manis seember 😂🫖',
+        text: 'Siap Admin! Kalau maggot saya sukses, saya traktir teh manis seember 😂🫖',
         time: '10:23 AM',
       ),
     ];
@@ -203,18 +223,23 @@ class _ChatBubble extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 260),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color:
-            isMe ? ForumChatPage.bubbleBgSelf : ForumChatPage.bubbleBgLight,
+        color: isMe ? ForumChatPage.bubbleBgSelf : ForumChatPage.bubbleBgLight,
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(16),
           topRight: const Radius.circular(16),
           bottomLeft: Radius.circular(isMe ? 16 : 4),
           bottomRight: Radius.circular(isMe ? 4 : 16),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          )
+        ]
       ),
       child: Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Text(
             message.text,
@@ -236,36 +261,34 @@ class _ChatBubble extends StatelessWidget {
       ),
     );
 
-    // baris dengan avatar + nama + bubble
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!isMe) ...[
             _AvatarCircle(
               color: message.avatarColor,
-              initials:
-                  message.senderName.isNotEmpty ? message.senderName[0] : '?',
+              initials: message.senderName.isNotEmpty ? message.senderName[0] : '?',
             ),
             const SizedBox(width: 8),
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment:
-                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 if (!isMe)
-                  Text(
-                    message.senderName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 4),
+                    child: Text(
+                      message.senderName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                if (!isMe) const SizedBox(height: 4),
                 bubble,
               ],
             ),
@@ -302,6 +325,7 @@ class _AvatarCircle extends StatelessWidget {
   }
 }
 
+// --- WIDGET INPUT BAR ---
 class _ChatInputBar extends StatelessWidget {
   const _ChatInputBar();
 
@@ -314,7 +338,6 @@ class _ChatInputBar extends StatelessWidget {
         top: false,
         child: Row(
           children: [
-            // ikon + dan lainnya
             Row(
               children: [
                 _iconCircle(Icons.add),
@@ -325,11 +348,9 @@ class _ChatInputBar extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 8),
-            // text field bubble
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.95),
                   borderRadius: BorderRadius.circular(24),

@@ -11,23 +11,22 @@ class CustomBottomNavBar extends StatelessWidget {
   });
 
   void _onNavBarTap(BuildContext context, int index) {
-    // Kalau tab yang aktif diklik lagi, tidak usah navigasi ulang
     if (index == indexSelected) return;
 
     switch (index) {
-      case 0: // Beranda
+      case 0: 
         Navigator.pushReplacementNamed(context, HomeRoute);
         break;
 
-      case 1: // Produk
+      case 1: 
         Navigator.pushReplacementNamed(context, ProductRoute);
         break;
 
-      case 2: // Komunitas
-        Navigator.pushReplacementNamed(context, ForumRoute);
+      case 2: 
+        Navigator.pushNamed(context, ForumRoute);
         break;
 
-      case 3: // Edukasi
+      case 3: 
         Navigator.pushReplacementNamed(context, EdukasiRoute);
         break;
 
