@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'feedback.dart';
+
 // Pastikan import halaman-halaman yang diperlukan (misal: HomeRoute dari main.dart)
 // import 'main.dart'; 
 
@@ -143,13 +145,18 @@ class StatusPesananPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // 5. Tombol Feedback
+             // 5. Tombol BERI FEEDBACK
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8FA88F), // Hijau Sage Pudar (Variasi)
+                  backgroundColor: Color(0xFF8FA88F),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 ),
