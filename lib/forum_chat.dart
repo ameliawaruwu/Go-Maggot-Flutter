@@ -5,10 +5,10 @@ class ForumChatPage extends StatelessWidget {
   const ForumChatPage({super.key});
 
   // warna-warna utama
-  static const Color topBarColor = Color(0xFF6E8761);      // hijau tua bar atas
-  static const Color pageBgColor = Color(0xFFE5EACB);     // hijau muda background
+  static const Color topBarColor = Color(0xFF6E8761);     
+  static const Color pageBgColor = Color(0xFFE5EACB);     
   static const Color bubbleBgLight = Colors.white;
-  static const Color bubbleBgSelf = Color(0xFF76A36A);    // hijau balon chat kita
+  static const Color bubbleBgSelf = Color(0xFF76A36A);    
   static const Color bottomBarColor = Color(0xFF6E8761);
 
   @override
