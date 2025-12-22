@@ -3,8 +3,8 @@ import 'komponen-navbar.dart'; // Import Navbar
 import 'bantuan.dart';         // Halaman Bantuan
 import 'faq_page.dart';        // Halaman FAQ
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileContent extends StatelessWidget {
+  const ProfileContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -186,11 +186,6 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-
-      // --- BOTTOM NAVIGATION BAR ---
-      bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 4, // Index 4 = Profil
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'forgot_password_screen.dart';
 import 'main.dart' show RegisterRoute;
+import 'main_screen.dart';
 
 const String appName = 'GoMaggot';
 const Color primaryDarkGreen = Color(0xFF385E39);
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const HomePage(),
+        builder: (context) => const MainScreen(),
       ),
     );
   }

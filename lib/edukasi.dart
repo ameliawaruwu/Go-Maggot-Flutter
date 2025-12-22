@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'komponen-navbar.dart'; 
 import 'artikel_detail.dart'; 
 
-class EdukasiPage extends StatelessWidget {
-  const EdukasiPage({super.key});
+class EdukasiContent extends StatelessWidget {
+  const EdukasiContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -132,10 +132,6 @@ class EdukasiPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      
-      bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 3, 
       ),
     );
   }

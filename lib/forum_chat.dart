@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ForumChatPage extends StatelessWidget {
-  const ForumChatPage({super.key});
+  const ForumChatPage({super.key, this.onBackPressed});
+
+  final VoidCallback? onBackPressed;
 
   // --- PALET WARNA ---
   static const Color topBarColor = Color(0xFF385E39);     
@@ -66,7 +68,7 @@ class ForumChatPage extends StatelessWidget {
             children: [
               // Tombol Back
               InkWell(
-                onTap: () => Navigator.pop(context),
+                onTap: onBackPressed ?? () => Navigator.pop(context),
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
