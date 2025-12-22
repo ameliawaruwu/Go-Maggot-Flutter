@@ -193,7 +193,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
           
-          // Bottom Navigation Bar
+          // Bottom Navigation Bar Bawah
           const CustomBottomNavBar(
             indexSelected: 1, 
           ),
