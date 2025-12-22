@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Halaman–halaman
+// Halaman–halaman (Pastikan file-file ini ada)
 import 'bantuan.dart';
 import 'edukasi.dart';
 import 'profil.dart';
@@ -14,7 +14,12 @@ import 'home_page.dart';
 import 'splash_screen.dart';
 import 'landing_page.dart';
 import 'forum_chat.dart';
-import 'faq_page.dart';
+import 'faq_page.dart'; 
+import 'galeri.dart';
+import 'notifikasi.dart';
+import 'status_pesanan.dart';
+import 'chat_produk.dart';
+import 'artikel_detail.dart';
 
 
 const String SplashRoute   = '/';
@@ -36,6 +41,7 @@ const String ProfileRoute  = '/profil';
 const String PaymentRoute  = '/payment';
 const String FeedbackRoute = '/feedback';
 const String FaqRoute      = '/faq';
+const String StatusRoute   = '/status'; // Tambahan untuk status pesanan
 
 void main() {
   runApp(const MyApp());
@@ -56,7 +62,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-     
       initialRoute: SplashRoute,
 
       routes: {
@@ -80,6 +85,7 @@ class MyApp extends StatelessWidget {
         PaymentRoute:  (context) => const PaymentPage(),
         FeedbackRoute: (context) => const FeedbackPage(),
         FaqRoute:      (context) => const FAQPage(),
+        StatusRoute:   (context) => const StatusPesananPage(),
       },
     );
   }

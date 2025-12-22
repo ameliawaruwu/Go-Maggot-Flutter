@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'product.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int indexSelected;
@@ -14,23 +13,23 @@ class CustomBottomNavBar extends StatelessWidget {
     if (index == indexSelected) return;
 
     switch (index) {
-      case 0: 
+      case 0:
         Navigator.pushReplacementNamed(context, HomeRoute);
         break;
 
-      case 1: 
+      case 1:
         Navigator.pushReplacementNamed(context, ProductRoute);
         break;
 
-      case 2: 
+      case 2:
         Navigator.pushNamed(context, ForumRoute);
         break;
 
-      case 3: 
+      case 3:
         Navigator.pushReplacementNamed(context, EdukasiRoute);
         break;
 
-      case 4: // Profil
+      case 4:
         Navigator.pushReplacementNamed(context, ProfileRoute);
         break;
     }
@@ -43,8 +42,9 @@ class CustomBottomNavBar extends StatelessWidget {
     int index,
   ) {
     final isSelected = index == indexSelected;
-    const selectedColor = Color(0xFF6B8E23); // hijau olive
-    const unselectedColor = Colors.grey;
+    
+    const selectedColor = Color(0xFF97C965); 
+    const unselectedColor = Colors.white54; 
 
     return InkWell(
       onTap: () => _onNavBarTap(context, index),
@@ -57,15 +57,15 @@ class CustomBottomNavBar extends StatelessWidget {
             Icon(
               icon,
               color: isSelected ? selectedColor : unselectedColor,
-              size: 24,
+              size: 26, 
             ),
+            const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
                 fontSize: 10,
                 color: isSelected ? selectedColor : unselectedColor,
-                fontWeight:
-                    isSelected ? FontWeight.bold : FontWeight.normal,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ],
@@ -76,22 +76,22 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryDarkGreen = Color(0xFF2C4A34);
+    const primaryDarkGreen = Color(0xFF385E39);
 
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: primaryDarkGreen,
+        color: primaryDarkGreen, 
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.3),
             spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, -3),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
       ),

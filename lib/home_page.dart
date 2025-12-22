@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart';
 import 'galeri.dart';
 import 'notifikasi.dart';
+// import 'komponen-navbar.dart'; // <--- TIDAK PERLU DIIMPORT LAGI
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -98,14 +98,15 @@ class HomePage extends StatelessWidget {
 
       body: const HomeContent(),
 
-      // indexSelected = 0 artinya tab "Home" di navbar yang aktif
-      bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 0,
-      ),
+      // --- BAGIAN INI DIHAPUS AGAR NAVBAR TIDAK DOBEL ---
+      // bottomNavigationBar: const CustomBottomNavBar(
+      //   indexSelected: 0,
+      // ),
     );
   }
 }
 
+// === KONTEN HOME (TETAP SAMA) ===
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 

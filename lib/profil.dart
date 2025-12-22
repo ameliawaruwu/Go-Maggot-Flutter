@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'komponen-navbar.dart'; // Import Navbar
-import 'bantuan.dart';         // Halaman Bantuan
-import 'faq_page.dart';        // Halaman FAQ
+import 'bantuan.dart'; // Pastikan file ini ada
+import 'faq_page.dart'; // Pastikan file ini ada
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // --- PALET WARNA (Sesuai Kode Awal) ---
     final Color darkGreenBg = const Color(0xFF385E39);   // Hijau tua background
-    final Color lightGreenBtn = const Color(0xFF6C856C); // Hijau pudar untuk tombol Pesanan/Ulasan
+    final Color lightGreenBtn = const Color(0xFF6C856C); // Hijau pudar untuk tombol
     final Color whiteCard = const Color(0xFFFFFFFF);
     final Color darkButton = const Color(0xFF1B3022);    // Hijau gelap tombol Logout
 
@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
             child: Column(
               children: [
-                // Baris Foto & Nama (POV SUDAH LOGIN)
+                // Baris Foto & Nama
                 Row(
                   children: [
                     // Foto Profil Lingkaran
@@ -55,7 +55,7 @@ class ProfilePage extends StatelessWidget {
                           'assets/profile_pic.png',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return Icon(
+                            return const Icon(
                               Icons.person,
                               size: 50,
                               color: Colors.grey,
@@ -65,7 +65,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 20),
-                    // Teks Nama & Email (User Login)
+                    // Teks Nama & Email
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,9 +160,9 @@ class ProfilePage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Saat ini diarahkan ke route '/'
-                        // (di app-mu ini adalah layar awal/Splash)
-                        Navigator.pushReplacementNamed(context, '/');
+                        // Kembali ke halaman Login (Route '/')
+                        // pushNamedAndRemoveUntil agar tidak bisa kembali ke profil setelah logout
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: darkButton,
@@ -187,11 +187,11 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-
-      // --- BOTTOM NAVIGATION BAR ---
-      bottomNavigationBar: const CustomBottomNavBar(
-        indexSelected: 4, // Index 4 = Profil
-      ),
+      
+      // CATATAN PENTING:
+      // Kode 'bottomNavigationBar' SAYA HAPUS di sini.
+      // Karena Navbar sudah muncul otomatis dari 'MainScreen'.
+      // Jika kode ini tetap ada, navbar akan muncul GANDA (satu diam, satu gerak).
     );
   }
 
@@ -214,7 +214,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // WIDGET ITEM MENU (Dengan Navigasi)
+  // WIDGET ITEM MENU
   Widget _buildMenuItem(
     BuildContext context,
     String text,
