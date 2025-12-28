@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'bantuan.dart'; // Pastikan file ini ada
-import 'faq_page.dart'; // Pastikan file ini ada
+import 'bantuan.dart'; 
+import 'faq_page.dart'; 
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileContent extends StatelessWidget {
+  const ProfileContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -187,11 +187,6 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      
-      // CATATAN PENTING:
-      // Kode 'bottomNavigationBar' SAYA HAPUS di sini.
-      // Karena Navbar sudah muncul otomatis dari 'MainScreen'.
-      // Jika kode ini tetap ada, navbar akan muncul GANDA (satu diam, satu gerak).
     );
   }
 

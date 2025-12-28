@@ -30,15 +30,14 @@ final List<Product> allProducts = [
 ];
 
 
-// --- WIDGET HALAMAN UTAMA PRODUK (DIUBAH MENJADI STATEFUL) ---
-class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+class ProductContent extends StatefulWidget {
+  const ProductContent({super.key});
 
   @override
-  State<ProductPage> createState() => _ProductPageState();
+  State<ProductContent> createState() => _ProductContentState();
 }
 
-class _ProductPageState extends State<ProductPage> {
+class _ProductContentState extends State<ProductContent> {
   // State untuk Kategori yang dipilih
   String selectedCategory = 'Maggot'; // Default saat pertama dibuka
   
@@ -85,16 +84,9 @@ class _ProductPageState extends State<ProductPage> {
     // Warna latar belakang 
     const Color customGreenBg = Color(0xFF385E39);
 
-    return Scaffold(
-      backgroundColor: customGreenBg,
-      
-      appBar: AppBar(
-        toolbarHeight: 0, 
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-
-      body: Column(
+    return Container(
+      color: customGreenBg,
+      child: Column(
         children: [
           // Bagian Judul dan Search Bar
           Padding(
@@ -148,34 +140,23 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          
-          // Tab Kategori (Sudah Interaktif dan menggunakan state)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildCategoryTab(context, 'Maggot'),
-                _buildCategoryTab(context, 'Kandang'),
-                _buildCategoryTab(context, 'Pupuk'),
-              ],
-            ),
-          ),
-          
-          // Grid Produk (Menggunakan produk yang sudah di-filter)
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-              decoration: const BoxDecoration(
-                color: Color(0xFFE8F0E4), 
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+                const SizedBox(height: 20),
+                // Kategori Tabs
+                Row(
+                  children: [
+                    _buildCategoryTab(context, 'Maggot'),
+                    _buildCategoryTab(context, 'Pupuk'),
+                    _buildCategoryTab(context, 'Kandang'),
+                  ],
                 ),
-              ),
+              ],
+            ),
+          ),
+
+          // Grid Produk
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: GridView.builder(
                 padding: EdgeInsets.zero,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -191,11 +172,6 @@ class _ProductPageState extends State<ProductPage> {
                 },
               ),
             ),
-          ),
-          
-          // Bottom Navigation Bar
-          const CustomBottomNavBar(
-            indexSelected: 1, 
           ),
         ],
       ),

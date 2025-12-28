@@ -13,6 +13,7 @@ import 'feedback.dart';
 import 'home_page.dart';
 import 'splash_screen.dart';
 import 'landing_page.dart';
+import 'main_screen.dart';
 import 'forum_chat.dart';
 import 'faq_page.dart'; 
 import 'galeri.dart';
@@ -74,12 +75,12 @@ class MyApp extends StatelessWidget {
         RegisterRoute: (context) => const RegisterScreen(),
 
         // main pages
-        HomeRoute:     (context) => const HomePage(),
-        ProductRoute:  (context) => const ProductPage(),
+        HomeRoute:     (context) => const MainScreen(),
+        ProductRoute:  (context) => Scaffold(body: const ProductContent()),
         CartRoute:     (context) => const CartScreen(),
         ForumRoute:    (context) => const ForumChatPage(),
-        EdukasiRoute:  (context) => const EdukasiPage(),
-        ProfileRoute:  (context) => const ProfilePage(),
+        EdukasiRoute:  (context) => const EdukasiContent(),
+        ProfileRoute:  (context) => const ProfileContent(),
 
         // lainnya
         PaymentRoute:  (context) => const PaymentPage(),

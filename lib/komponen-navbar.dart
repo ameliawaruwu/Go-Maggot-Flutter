@@ -1,38 +1,20 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'product.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int indexSelected;
+  final Function(int) onTap;
 
   const CustomBottomNavBar({
     super.key,
     required this.indexSelected,
+    required this.onTap,
   });
 
   void _onNavBarTap(BuildContext context, int index) {
     if (index == indexSelected) return;
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, HomeRoute);
-        break;
-
-      case 1:
-        Navigator.pushReplacementNamed(context, ProductRoute);
-        break;
-
-      case 2:
-        Navigator.pushNamed(context, ForumRoute);
-        break;
-
-      case 3:
-        Navigator.pushReplacementNamed(context, EdukasiRoute);
-        break;
-
-      case 4:
-        Navigator.pushReplacementNamed(context, ProfileRoute);
-        break;
-    }
+    onTap(index);
   }
 
   Widget _buildNavItem(

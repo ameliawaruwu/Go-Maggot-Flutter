@@ -1,112 +1,16 @@
 import 'package:flutter/material.dart';
 import 'galeri.dart';
 import 'notifikasi.dart';
-// import 'komponen-navbar.dart'; // <--- TIDAK PERLU DIIMPORT LAGI
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  // warna yang dipakai berulang
-  static const Color primaryDarkGreen = Color(0xFF385E39);
-  static const Color accentLightGreen = Color(0xFF6E9E4F);
-  static const Color secondaryTextColor = Colors.white;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-
-      // APP BAR
-      appBar: AppBar(
-        backgroundColor: primaryDarkGreen,
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        toolbarHeight: 90,
-        flexibleSpace: Container(
-          padding: const EdgeInsets.only(
-            top: 40,
-            left: 20,
-            right: 20,
-            bottom: 10,
-          ),
-          decoration: const BoxDecoration(
-            color: primaryDarkGreen,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Logo teks GoMaggot
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Kaushan Script',
-                    color: accentLightGreen,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(text: 'Go'),
-                    TextSpan(
-                      text: 'Maggot',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic,
-                        fontFamily: 'Kaushan Script',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Icon search + notifikasi
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.search,
-                      color: secondaryTextColor,
-                      size: 30,
-                    ),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications_none,
-                      color: secondaryTextColor,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotifikasiPage(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-
-      body: const HomeContent(),
-
-      // --- BAGIAN INI DIHAPUS AGAR NAVBAR TIDAK DOBEL ---
-      // bottomNavigationBar: const CustomBottomNavBar(
-      //   indexSelected: 0,
-      // ),
-    );
+    return const HomeContent();
   }
 }
 
-// === KONTEN HOME (TETAP SAMA) ===
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
