@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'product.dart'; 
 import 'keranjang.dart'; 
 import 'main.dart'; 
 import 'chat_produk.dart';
+// IMPORT MODEL YANG BENAR
+import 'models/product_model.dart'; 
 
 const Color primaryDarkGreen = Color(0xFF385E39); 
 const Color accentLightGreen = Color(0xFF6E9E4F); 
-const Color lightCardGreen = Color(0xFFE4EDE5);   
+const Color lightCardGreen = Color(0xFFE4EDE5);    
+
 class ProductDetailPage extends StatelessWidget {
-  final Product product;
+  // GANTI DARI 'Product' KE 'ProdukModel'
+  final ProdukModel product;
 
   const ProductDetailPage({super.key, required this.product});
 
@@ -25,7 +28,8 @@ class ProductDetailPage extends StatelessWidget {
               const SizedBox(height: 10),
               const Text("Berhasil!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               const SizedBox(height: 5),
-              Text("${product.name} telah masuk keranjang."),
+              // GANTI .name JADI .namaProduk
+              Text("${product.namaProduk} telah masuk keranjang."),
             ],
           ),
           actions: [
@@ -44,7 +48,6 @@ class ProductDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: lightCardGreen, 
       
-     
       appBar: AppBar(
         backgroundColor: primaryDarkGreen, 
         elevation: 0,
@@ -57,7 +60,8 @@ class ProductDetailPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, CartRoute);
+              // Pastikan route ini ada di main.dart
+              Navigator.pushNamed(context, '/cart'); 
             },
           ),
         ],
@@ -67,6 +71,8 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
+            
+            // --- GAMBAR UTAMA (DARI INTERNET) ---
             Center(
               child: Container(
                 height: 220,
@@ -78,11 +84,14 @@ class ProductDetailPage extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    product.imagePath,
-                    fit: BoxFit.contain,
-                    errorBuilder: (ctx, err, stack) => const Icon(Icons.image_not_supported, size: 80, color: Colors.grey),
-                  ),
+                  // LOGIKA GAMBAR: Cek URL ada atau tidak
+                  child: product.gambarUrl != null
+                      ? Image.network(
+                          product.gambarUrl!,
+                          fit: BoxFit.contain,
+                          errorBuilder: (ctx, err, stack) => const Icon(Icons.image_not_supported, size: 80, color: Colors.grey),
+                        )
+                      : const Icon(Icons.image_not_supported, size: 80, color: Colors.grey),
                 ),
               ),
             ),
@@ -94,16 +103,18 @@ class ProductDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // NAMA PRODUK
                   Text(
-                    product.name,
+                    product.namaProduk, // Dari API
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Serif', color: Colors.black87),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // HARGA (Format Manual dari int ke String)
                       Text(
-                        product.price,
+                        "Rp ${product.harga}", 
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
                       ),
                       const Text("5Rb Terjual", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
@@ -115,21 +126,23 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-           
+            // --- INFO BOX (DATA DARI API) ---
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: primaryDarkGreen.withOpacity(0.9), // Hijau Tua Transparan dikit
+                color: primaryDarkGreen.withOpacity(0.9), 
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
                 children: [
-                  _buildInfoRow("Merk:", "GoMaggot"),
+                  _buildInfoRow("Merk:", product.merk), // Dari API
                   const SizedBox(height: 8),
-                  _buildInfoRow("Stok :", "3kg"),
+                  _buildInfoRow("Stok :", "${product.stok}"), // Dari API (int ke String)
                   const SizedBox(height: 8),
-                  _buildInfoRow("Jenis:", "Maggot"),
+                  _buildInfoRow("Kategori:", product.kategori), // Dari API
+                   const SizedBox(height: 8),
+                  _buildInfoRow("Berat:", product.berat), // Dari API
                 ],
               ),
             ),
@@ -152,8 +165,9 @@ class ProductDetailPage extends StatelessWidget {
             ),
 
             // 5. LIST REVIEW
-            _buildReviewItem("Santi", "Produk bersih, packagingnya juga rapih", product.imagePath),
-            _buildReviewItem("Sinta", "Produk bersih, packagingnya juga rapih", product.imagePath),
+            // Kirim gambarUrl (bisa null) ke widget review
+            _buildReviewItem("Santi", "Produk bersih, packagingnya juga rapih", product.gambarUrl),
+            _buildReviewItem("Sinta", "Pengiriman cepat dan aman", product.gambarUrl),
 
             const SizedBox(height: 30),
           ],
@@ -165,7 +179,7 @@ class ProductDetailPage extends StatelessWidget {
         height: 90, 
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: const BoxDecoration(
-          color: primaryDarkGreen, // Background Bottom Bar Hijau Tua
+          color: primaryDarkGreen, 
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
@@ -185,7 +199,6 @@ class ProductDetailPage extends StatelessWidget {
               icon: const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 28),
             ),
             
-            // Garis Pemisah
             Container(width: 1, height: 40, color: Colors.white54),
 
             // Ikon Add Cart
@@ -194,13 +207,12 @@ class ProductDetailPage extends StatelessWidget {
               icon: const Icon(Icons.add_shopping_cart, color: Colors.white, size: 28),
             ),
 
-            // Garis Pemisah
             Container(width: 1, height: 40, color: Colors.white54),
 
-            // Tombol Beli Sekarang (Hijau Aksen/Terang)
+            // Tombol Beli Sekarang
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: accentLightGreen, // Warna Tombol Kontras
+                backgroundColor: accentLightGreen, 
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                 elevation: 2,
@@ -221,12 +233,13 @@ class ProductDetailPage extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 80, child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
-        Text(value, style: const TextStyle(color: Colors.white, fontSize: 16)),
+        Expanded(child: Text(value, style: const TextStyle(color: Colors.white, fontSize: 16), overflow: TextOverflow.ellipsis)),
       ],
     );
   }
 
-  Widget _buildReviewItem(String name, String comment, String imgPath) {
+  // Update Widget Review untuk menerima String nullable (String?)
+  Widget _buildReviewItem(String name, String comment, String? imgPath) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.all(12),
@@ -264,10 +277,12 @@ class ProductDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          // Gambar User/Produk Kecil di Kanan
+          // Gambar User/Produk Kecil di Kanan (Handle Null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(imgPath, width: 60, height: 60, fit: BoxFit.cover),
+            child: imgPath != null 
+                ? Image.network(imgPath, width: 60, height: 60, fit: BoxFit.cover)
+                : const Icon(Icons.account_circle, size: 60, color: Colors.grey),
           ),
         ],
       ),
