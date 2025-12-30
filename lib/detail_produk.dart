@@ -4,6 +4,7 @@ import 'main.dart';
 import 'chat_produk.dart';
 // IMPORT MODEL YANG BENAR
 import 'models/product_model.dart'; 
+import 'cart_helper.dart'; 
 
 const Color primaryDarkGreen = Color(0xFF385E39); 
 const Color accentLightGreen = Color(0xFF6E9E4F); 
@@ -15,32 +16,39 @@ class ProductDetailPage extends StatelessWidget {
 
   const ProductDetailPage({super.key, required this.product});
 
-  void _showSuccessAlert(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.check_circle, color: primaryDarkGreen, size: 50),
-              const SizedBox(height: 10),
-              const Text("Berhasil!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              const SizedBox(height: 5),
-              // GANTI .name JADI .namaProduk
-              Text("${product.namaProduk} telah masuk keranjang."),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK", style: TextStyle(color: primaryDarkGreen)),
+  void _showSuccessAlert(BuildContext context) async {
+    try {
+      await CartHelper.addToCart(product);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.check_circle, color: primaryDarkGreen, size: 50),
+                const SizedBox(height: 10),
+                const Text("Berhasil!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                const SizedBox(height: 5),
+                // GANTI .name JADI .namaProduk
+                Text("${product.namaProduk} telah masuk keranjang."),
+              ],
             ),
-          ],
-        );
-      },
-    );
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK", style: TextStyle(color: primaryDarkGreen)),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal menambah ke keranjang: $e')),
+      );
+    }
   }
 
   @override

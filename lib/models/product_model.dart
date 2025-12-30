@@ -42,23 +42,26 @@ class ProdukModel {
       berat: json['berat']?.toString() ?? '',
       harga: int.tryParse(json['harga']?.toString() ?? '0') ?? 0,
       stok: int.tryParse(json['stok']?.toString() ?? '0') ?? 0,
-      
-      // 2. Panggil Helper disini. Simpel & Rapi!
-      // Helper akan otomatis membereskan IP, localhost, spasi, dll.
       gambar: ImageHelper.fixUrl(json['gambar']?.toString()),
       gambarUrl: ImageHelper.fixUrl(json['gambar_url']?.toString()), 
     );
   }
   
+  // PERBAIKAN DI SINI: Semua field wajib masuk agar data tidak hilang saat reload keranjang
   Map<String, dynamic> toJson() {
     return {
       'id_produk': idProduk,
       'nama_produk': namaProduk,
-      // ... field lainnya ...
+      'deskripsi_produk': deskripsiProduk,
+      'kategori': kategori,
+      'merk': merk,
+      'masa_penyimpanan': masaPenyimpanan,
+      'pengiriman': pengiriman,
+      'berat': berat,
+      'harga': harga,
+      'stok': stok,
       'gambar': gambar,
       'gambar_url': gambarUrl,
     };
   }
-  
-  // (Fungsi copyWith biarkan saja, tidak perlu diubah)
 }

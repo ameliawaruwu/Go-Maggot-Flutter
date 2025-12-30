@@ -3,7 +3,11 @@ import 'qr-code.dart'; // Pastikan file ini ada
 import 'status_pesanan.dart'; // <--- PENTING: Import halaman tujuan
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+  // TAMBAHKAN PARAMETER INI AGAR TIDAK ERROR DI CHECKOUT PAGE
+  final String orderId;
+
+  // Sesuaikan constructor untuk menerima orderId
+  const PaymentPage({super.key, required this.orderId});
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
@@ -31,20 +35,21 @@ class _PaymentPageState extends State<PaymentPage> {
     } else {
       // 2. Tampilkan Notifikasi Sukses
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 10),
-              Text('Pembayaran Berhasil!'),
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 10),
+              // Kita bisa menampilkan orderId di sini jika mau
+              Text('Pembayaran Pesanan ${widget.orderId} Berhasil!'),
             ],
           ),
           backgroundColor: Colors.green, // Hijau untuk sukses
-          duration: Duration(seconds: 2), // Muncul selama 2 detik
+          duration: const Duration(seconds: 2), // Muncul selama 2 detik
         ),
       );
       
-      debugPrint('Bukti bayar $_fileName dikirim.');
+      debugPrint('Bukti bayar $_fileName dikirim untuk order: ${widget.orderId}');
 
       // 3. Beri jeda 2 detik agar notifikasi terbaca, lalu pindah halaman
       Future.delayed(const Duration(seconds: 2), () {
@@ -74,14 +79,14 @@ class _PaymentPageState extends State<PaymentPage> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white), // Ubah icon jadi putih biar kontras
+          icon: const Icon(Icons.arrow_back, color: Colors.white), 
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
       body: Center(
-        child: SingleChildScrollView( // Tambahkan Scroll agar aman di layar kecil
+        child: SingleChildScrollView( 
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
@@ -94,11 +99,11 @@ class _PaymentPageState extends State<PaymentPage> {
                 mainAxisSize: MainAxisSize.min, 
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  // Judul "Scan QR Code"
-                  const Text(
-                    'Scan QR Code',
+                  // Judul & Info ID Pesanan
+                  Text(
+                    'Scan QR Code\nID Pesanan: ${widget.orderId}', // Menampilkan ID Pesanan
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -120,8 +125,6 @@ class _PaymentPageState extends State<PaymentPage> {
                           ),
                         ],
                       ),
-                      // Pastikan class QrCodeImage ada di file qr-code.dart
-                      // Jika error, ganti sementara dengan Icon(Icons.qr_code, size: 150)
                       child: const QrCodeImage(size: 150), 
                     ),
                   ),
@@ -148,7 +151,6 @@ class _PaymentPageState extends State<PaymentPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Teks nama file
                         Expanded(
                           child: Text(
                             _fileName ?? 'Belum ada file...',
@@ -158,7 +160,6 @@ class _PaymentPageState extends State<PaymentPage> {
                             ),
                           ),
                         ),
-                        // Tombol "choose file"
                         InkWell(
                           onTap: _selectFile,
                           child: const Padding(
@@ -176,7 +177,6 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  // Teks "Lihat gambar"
                   const Text(
                     'Format: JPG, PNG',
                     style: TextStyle(
