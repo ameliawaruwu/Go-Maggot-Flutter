@@ -1,9 +1,9 @@
 class ApiConfig {
   
-  static const String _serverIp = "10.121.188.89"; // JANGAN pakai http://
+  static const String _serverIp = "192.168.1.12"; // JANGAN pakai http://
   static const String _serverPort = "8000";
 
-  // Base URL Utama: http://10.121.188.89:8000/api
+  // Base URL Utama: http://192.168.1.12:8000/api
   static const String baseUrl = "http://$_serverIp:$_serverPort/api";
 
   // =======================================================================

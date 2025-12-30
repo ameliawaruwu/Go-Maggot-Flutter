@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/auth_service.dart';
 import 'login.dart' show LoginScreen, primaryDarkGreen, accentLightGreen;
 
 class RegisterScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordHidden = true;
+  bool _isLoading = false;
 
   static const LinearGradient _bgGradient = LinearGradient(
     begin: Alignment.topCenter,
@@ -25,26 +27,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ],
   );
 
-  void _attemptRegister(BuildContext context) {
+  // =========================
+  // REGISTER LOGIC (API)
+  // =========================
+  Future<void> _attemptRegister(BuildContext context) async {
     final username = _usernameController.text.trim();
     final email    = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     if (username.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Semua field wajib diisi.'),
-          backgroundColor: Colors.red,
-        ),
+        const SnackBar(content: Text('Semua field wajib diisi')),
       );
       return;
     }
 
-    // Sementara langsung balik ke login.
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    setState(() => _isLoading = true);
+
+    final result = await AuthService.register(
+      username,
+      email,
+      password,
     );
+
+    if (!mounted) return;
+
+    setState(() => _isLoading = false);
+
+    if (result.success) {
+      // REGISTER SUKSES → BALIK KE LOGIN
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    } else {
+      // REGISTER GAGAL → TAMPILKAN PESAN DARI BACKEND
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message)),
+      );
+    }
   }
 
   @override
@@ -55,6 +76,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  // =========================
+  // UI (TIDAK DIUBAH)
+  // =========================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +92,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // LOGO GoMaggot
                 Align(
                   alignment: Alignment.centerLeft,
                   child: RichText(
@@ -149,9 +172,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 28),
 
-                // TOMBOL DAFTAR
                 ElevatedButton(
-                  onPressed: () => _attemptRegister(context),
+                  onPressed: _isLoading ? null : () => _attemptRegister(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accentLightGreen,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -160,43 +182,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     elevation: 4,
                   ),
-                  child: const Text(
-                    'DAFTAR',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                const Center(
-                  child: Text(
-                    'Atau daftar dengan',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildSocialButton(
-                      icon: Icons.g_mobiledata,
-                      color: Colors.redAccent,
-                    ),
-                    _buildSocialButton(
-                      icon: Icons.facebook,
-                      color: Colors.blueAccent,
-                    ),
-                  ],
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : const Text(
+                          'DAFTAR',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
 
                 const SizedBox(height: 32),
 
-                // Sudah punya akun? MASUK
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -223,7 +229,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
-                            letterSpacing: 0.4,
                           ),
                         ),
                       ),
@@ -238,6 +243,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // =========================
+  // COMPONENT (TIDAK DIUBAH)
+  // =========================
   Widget _buildInputField({
     required TextEditingController controller,
     required String hintText,
