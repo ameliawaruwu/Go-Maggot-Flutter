@@ -47,9 +47,9 @@ class ReviewModel {
       'id_produk': idProduk,
       'rating_seller': ratingSeller,
       'komentar': komentar,
-      'kualitas': kualitas, // Sekarang diambil dari variabel
+      'kualitas': kualitas, 
       'kegunaan': 'Sangat Bermanfaat',
-      'tampilkan_username': tampilkanUsername, // Sekarang diambil dari variabel
+      'tampilkan_username': tampilkanUsername, 
     };
   }
 }

@@ -11,16 +11,14 @@ class ImageHelper {
 
     String finalUrl = rawUrl;
 
-    // 2. Logic Perbaikan URL yang ada 'http'
+    
     if (finalUrl.startsWith('http')) {
-      
-      // Fix A: Ganti 'storage' jadi 'photo' (Jika folder asli di server adalah 'photo')
       if (finalUrl.contains('/storage/')) {
         finalUrl = finalUrl.replaceAll('/storage/', '/photo/');
       }
 
       
-      if (finalUrl.contains('localhost') || finalUrl.contains('192.168.1.12')) {
+      if (finalUrl.contains('localhost') || finalUrl.contains('10.121.188.89')) {
         try {
           String base = ApiConfig.baseUrl; 
           
@@ -30,7 +28,7 @@ class ImageHelper {
 
           finalUrl = finalUrl
               .replaceAll('localhost', realIp)
-              .replaceAll('192.168.1.12', realIp);
+              .replaceAll('10.121.188.89 ', realIp);
         } catch (e) {
           print("Error parsing IP di Helper: $e");
         }

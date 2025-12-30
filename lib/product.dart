@@ -19,7 +19,8 @@ class _ProductContentState extends State<ProductContent> {
   List<ProdukModel> _allProducts = []; 
   bool _isLoading = true; 
 
-  String selectedCategory = 'BSF'; 
+  // Default kategori 'Semua' agar data langsung muncul
+  String selectedCategory = 'Semua'; 
   String searchQuery = ''; 
   final TextEditingController _searchController = TextEditingController();
 
@@ -39,18 +40,7 @@ class _ProductContentState extends State<ProductContent> {
           _isLoading = false; 
         });
         
-        // DEBUG: Cek kategori DAN gambar
-        print("========================================");
-        print("✅ DATA MASUK: ${_allProducts.length} produk");
-        print("========================================");
-        for (var p in _allProducts) {
-          print("📦 Produk: ${p.namaProduk}");
-          print("   ├─ Kategori: '${p.kategori}'");
-          print("   ├─ gambarUrl: ${p.gambarUrl ?? 'NULL'}");
-          print("   └─ gambar: ${p.gambar ?? 'NULL'}");
-          print("---");
-        }
-        print("========================================");
+        print("✅ DATA BERHASIL DIMUAT: ${_allProducts.length} produk");
       }
     } catch (e) {
       print("❌ Error ambil data di UI: $e");
@@ -58,14 +48,19 @@ class _ProductContentState extends State<ProductContent> {
     }
   }
 
+  // LOGIKA FILTERING: Mendukung kategori Paket/Bundling
   List<ProdukModel> get _filteredProducts {
     return _allProducts.where((product) {
+      // Normalisasi teks
       String katDb = product.kategori.toLowerCase().trim();
       String katTab = selectedCategory.toLowerCase().trim();
       String nama = product.namaProduk.toLowerCase();
       String cari = searchQuery.toLowerCase();
 
-      bool matchCategory = katDb == katTab;
+      // 1. Logika Kategori (Termasuk pengecekan Paket)
+      bool matchCategory = selectedCategory == 'Semua' || katDb == katTab;
+      
+      // 2. Logika Pencarian Nama
       bool matchSearch = nama.contains(cari);
 
       return matchCategory && matchSearch;
@@ -81,10 +76,10 @@ class _ProductContentState extends State<ProductContent> {
           setState(() {
             selectedCategory = title;
           });
-          print("👉 Pindah ke Kategori: $title");
+          print("👉 Filter Kategori: $title");
         },
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          margin: const EdgeInsets.symmetric(horizontal: 2), // Margin diperkecil agar muat 5 tab
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : const Color(0xFF688969),
             borderRadius: BorderRadius.circular(8),
@@ -95,7 +90,7 @@ class _ProductContentState extends State<ProductContent> {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: title.length > 10 ? 12 : 14,
+              fontSize: 11, // Ukuran font disesuaikan
               color: isSelected ? Colors.green.shade800 : Colors.white,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
@@ -124,6 +119,7 @@ class _ProductContentState extends State<ProductContent> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 15),
+                // SEARCH BAR
                 Row(
                   children: [
                     Expanded(
@@ -137,7 +133,7 @@ class _ProductContentState extends State<ProductContent> {
                           controller: _searchController,
                           onChanged: (value) => setState(() => searchQuery = value),
                           decoration: const InputDecoration(
-                            hintText: 'Cari...',
+                            hintText: 'Cari produk...',
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.search, color: Colors.black54),
                           ),
@@ -145,22 +141,23 @@ class _ProductContentState extends State<ProductContent> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Container(
-                      decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(10)),
-                      child: IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
-                        onPressed: () => Navigator.pushNamed(context, '/cart'), 
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pushNamed(context, '/cart'), 
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 
+                // TAB KATEGORI: Ditambah opsi 'Paket' untuk Paket Bundling
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    _buildCategoryTab(context, 'Semua'),
                     _buildCategoryTab(context, 'BSF'),
-                    _buildCategoryTab(context, 'Kandang Maggot'),
+                    _buildCategoryTab(context, 'Kandang'),
                     _buildCategoryTab(context, 'Kompos'),
+                    _buildCategoryTab(context, 'Lainnya'), // Kategori Paket Bundling
                   ],
                 ),
               ],
@@ -177,12 +174,12 @@ class _ProductContentState extends State<ProductContent> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.search_off, size: 50, color: Colors.white70),
+                              const Icon(Icons.search_off, size: 60, color: Colors.white38),
                               const SizedBox(height: 10),
                               Text(
-                                "Belum ada produk di kategori '$selectedCategory'.\nCek penulisan di Database.", 
+                                "Produk tidak ditemukan di kategori '$selectedCategory'", 
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white70),
                               ),
                             ],
                           ),
@@ -208,7 +205,6 @@ class _ProductContentState extends State<ProductContent> {
   }
 }
 
-// --- PRODUCT CARD dengan DEBUG GAMBAR LENGKAP ---
 class ProductCard extends StatefulWidget {
   final ProdukModel product; 
 

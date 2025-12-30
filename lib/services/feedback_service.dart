@@ -12,7 +12,7 @@ class FeedbackService {
       // 1. Ambil Token (Wajib)
       String? token = await SessionHelper.getToken();
       if (token == null) {
-        print("❌ Token tidak ditemukan (Belum Login)");
+        print("Token tidak ditemukan (Belum Login)");
         return false;
       }
 
