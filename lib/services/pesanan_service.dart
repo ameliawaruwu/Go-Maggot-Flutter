@@ -4,7 +4,7 @@ import '../models/pesanan_model.dart';
 
 class PesananService {
   // Ganti dengan IP laptop temanmu
-  final String baseUrl = "http://10.121.188.89:8000/api"; 
+  final String baseUrl = "http://:8000/api"; 
 
   Future<List<PesananModel>> getPesananUser(String idPengguna) async {
     try {

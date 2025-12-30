@@ -18,7 +18,7 @@ class ImageHelper {
       }
 
       
-      if (finalUrl.contains('localhost') || finalUrl.contains('10.121.188.89')) {
+      if (finalUrl.contains('localhost') || finalUrl.contains('')) {
         try {
           String base = ApiConfig.baseUrl; 
           
@@ -28,7 +28,7 @@ class ImageHelper {
 
           finalUrl = finalUrl
               .replaceAll('localhost', realIp)
-              .replaceAll('10.121.188.89 ', realIp);
+              .replaceAll('', realIp);
         } catch (e) {
           print("Error parsing IP di Helper: $e");
         }

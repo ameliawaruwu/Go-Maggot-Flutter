@@ -6,7 +6,7 @@ import '../models/register_result.dart';
 import '../models/login_result.dart';
 
 class AuthService {
-  static const String baseUrl = 'http://10.121.188.89:8000/api';
+  static const String baseUrl = 'http://:8000/api';
   static Future<LoginResult> login(
     String email,
     String password,
@@ -56,9 +56,7 @@ class AuthService {
     }
   }
 
-  // =========================
-  // REGISTER 
-  // =========================
+ 
   static Future<RegisterResult> register(
     String username,
     String email,
