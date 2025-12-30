@@ -43,8 +43,7 @@ class ProdukModel {
       harga: int.tryParse(json['harga']?.toString() ?? '0') ?? 0,
       stok: int.tryParse(json['stok']?.toString() ?? '0') ?? 0,
       
-      // 2. Panggil Helper disini. Simpel & Rapi!
-      // Helper akan otomatis membereskan IP, localhost, spasi, dll.
+    
       gambar: ImageHelper.fixUrl(json['gambar']?.toString()),
       gambarUrl: ImageHelper.fixUrl(json['gambar_url']?.toString()), 
     );
