@@ -8,9 +8,8 @@ import '../models/login_result.dart';
 class AuthService {
   static const String baseUrl = 'http://192.168.1.12:8000/api';
 
-  // =========================
+  
   // LOGIN 
-  // =========================
   static Future<LoginResult> login(
     String email,
     String password,
