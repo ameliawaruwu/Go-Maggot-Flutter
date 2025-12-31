@@ -30,14 +30,30 @@ class ProdukModel {
   });
 
   factory ProdukModel.fromJson(Map<String, dynamic> json) {
+    // Memastikan harga dan stok dikonversi ke int dengan aman
+    int parsedHarga = 0;
+    if (json['harga'] is int) {
+      parsedHarga = json['harga'];
+    } else if (json['harga'] != null) {
+      parsedHarga = int.tryParse(json['harga'].toString()) ?? 0;
+    }
+
+    int parsedStok = 0;
+    if (json['stok'] is int) {
+      parsedStok = json['stok'];
+    } else if (json['stok'] != null) {
+      parsedStok = int.tryParse(json['stok'].toString()) ?? 0;
+    }
+
     return ProdukModel(
+      // Menggunakan key sesuai JSON Laravel (id_produk, nama_produk, dsb)
       idProduk: json['id_produk']?.toString() ?? '',
-      namaProduk: json['nama_produk'] ?? 'Tanpa Nama',
-      deskripsiProduk: json['deskripsi_produk'] ?? '',
-      kategori: json['kategori'] ?? '',
-      merk: json['merk'] ?? '',
-      masaPenyimpanan: json['masa_penyimpanan'] ?? '',
-      pengiriman: json['pengiriman'] ?? '',
+      namaProduk: json['nama_produk']?.toString() ?? 'Tanpa Nama',
+      deskripsiProduk: json['deskripsi_produk']?.toString() ?? '',
+      kategori: json['kategori']?.toString() ?? '',
+      merk: json['merk']?.toString() ?? '',
+      masaPenyimpanan: json['masa_penyimpanan']?.toString() ?? '',
+      pengiriman: json['pengiriman']?.toString() ?? '',
       berat: json['berat']?.toString() ?? '',
       harga: int.tryParse(json['harga']?.toString() ?? '0') ?? 0,
       stok: int.tryParse(json['stok']?.toString() ?? '0') ?? 0,
@@ -50,9 +66,14 @@ class ProdukModel {
     return {
       'id_produk': idProduk,
       'nama_produk': namaProduk,
-      'gambar': gambar,
-      'gambar_url': gambarUrl,
+      'deskripsi_produk': deskripsiProduk,
+      'kategori': kategori,
+      'merk': merk,
+      'masa_penyimpanan': masaPenyimpanan,
+      'pengiriman': pengiriman,
+      'berat': berat,
+      'harga': harga,
+      'stok': stok,
     };
   }
-  
 }

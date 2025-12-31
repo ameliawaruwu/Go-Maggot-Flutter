@@ -1,61 +1,55 @@
 import '../config/api_config.dart';
 
 class ImageHelper {
-  
-  // Fungsi Sakti: Masukkan URL rusak, Keluar URL benar
   static String? fixUrl(String? rawUrl) {
-    // 1. Cek kalau kosong
-    if (rawUrl == null || rawUrl.isEmpty) {
-      return null;
+    if (rawUrl == null || rawUrl.isEmpty) return null;
+
+    // STEP 1: Decode dulu untuk membuang encoding lama (%20, %2520, dll)
+    // Agar kita mulai dari teks murni (pakai spasi asli)
+    String decodedUrl = Uri.decodeFull(rawUrl);
+
+    // STEP 2: Ambil host aktif (misal 10.121.188.89 atau 10.0.2.2)
+    String activeHost;
+    try {
+      activeHost = Uri.parse(ApiConfig.baseUrl).host;
+    } catch (e) {
+      activeHost = "10.0.2.2";
     }
 
-    String finalUrl = rawUrl;
+    String finalUrl = decodedUrl;
 
-    // 2. Logic Perbaikan URL yang ada 'http'
     if (finalUrl.startsWith('http')) {
-      
-      // Fix A: Ganti 'storage' jadi 'photo' (Jika folder asli di server adalah 'photo')
+      // STEP 3: Pastikan folder tujuan benar
       if (finalUrl.contains('/storage/')) {
         finalUrl = finalUrl.replaceAll('/storage/', '/photo/');
       }
 
-      
-      if (finalUrl.contains('localhost') || finalUrl.contains('192.168.1.12')) {
-        try {
-          String base = ApiConfig.baseUrl; 
-          
-         
-          Uri uri = Uri.parse(base);
-          String realIp = uri.host; 
-
-          finalUrl = finalUrl
-              .replaceAll('localhost', realIp)
-              .replaceAll('192.168.1.12', realIp);
-        } catch (e) {
-          print("Error parsing IP di Helper: $e");
-        }
-      }
-    } 
-    
-    else {
-      
+      // STEP 4: Ganti IP lama/localhost ke IP laptop yang aktif saat ini
+      finalUrl = finalUrl
+          .replaceAll('localhost', activeHost)
+          .replaceAll('127.0.0.1', activeHost)
+          .replaceAll('10.121.188.89', activeHost); 
+    } else {
+      // Jika URL relatif
       String serverRoot = ApiConfig.baseUrl;
       if (serverRoot.endsWith('/api')) {
         serverRoot = serverRoot.substring(0, serverRoot.length - 4);
       }
-
-      // Bersihkan slash di depan nama file
       String cleanPath = finalUrl.startsWith('/') ? finalUrl.substring(1) : finalUrl;
-
-      // Pastikan folder photo/ ada (sesuai struktur folder public laravel kamu)
       if (!cleanPath.startsWith('photo/')) {
         cleanPath = 'photo/$cleanPath';
       }
-
       finalUrl = "$serverRoot/$cleanPath";
     }
 
-    // 4. Fix Terakhir (PENTING): Ubah SPASI jadi %20 agar terbaca HP
+    // STEP 5: Encode satu kali saja di akhir. 
+    // Ini akan mengubah spasi menjadi %20 secara bersih.
     return Uri.encodeFull(finalUrl);
+  }
+
+  static String? fixUrlWithLog(String? rawUrl) {
+    String? result = fixUrl(rawUrl);
+    print('🖼️ [RESULT URL]: $result'); 
+    return result;
   }
 }
