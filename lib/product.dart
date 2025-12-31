@@ -8,6 +8,9 @@ import 'models/product_model.dart';
 // 2. IMPORT SERVICE
 import '../services/product_service.dart'; 
 
+// 3. IMPORT IMAGE HELPER (PENTING!)
+import '../utils/image_helper.dart';
+
 class ProductContent extends StatefulWidget {
   const ProductContent({super.key});
 
@@ -79,7 +82,7 @@ class _ProductContentState extends State<ProductContent> {
           print("👉 Filter Kategori: $title");
         },
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 2), // Margin diperkecil agar muat 5 tab
+          margin: const EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : const Color(0xFF688969),
             borderRadius: BorderRadius.circular(8),
@@ -90,7 +93,7 @@ class _ProductContentState extends State<ProductContent> {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 11, // Ukuran font disesuaikan
+              fontSize: 11,
               color: isSelected ? Colors.green.shade800 : Colors.white,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
@@ -149,7 +152,7 @@ class _ProductContentState extends State<ProductContent> {
                 ),
                 const SizedBox(height: 20),
                 
-                // TAB KATEGORI: Ditambah opsi 'Paket' untuk Paket Bundling
+                // TAB KATEGORI
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -157,7 +160,7 @@ class _ProductContentState extends State<ProductContent> {
                     _buildCategoryTab(context, 'BSF'),
                     _buildCategoryTab(context, 'Kandang'),
                     _buildCategoryTab(context, 'Kompos'),
-                    _buildCategoryTab(context, 'Lainnya'), // Kategori Paket Bundling
+                    _buildCategoryTab(context, 'Lainnya'),
                   ],
                 ),
               ],
@@ -231,79 +234,68 @@ class _ProductCardState extends State<ProductCard> {
     print("🖼️ Rendering gambar untuk: ${widget.product.namaProduk}");
     
     // Prioritas 1: Cek gambarUrl
-    if (widget.product.gambarUrl != null && widget.product.gambarUrl!.isNotEmpty) {
-      final url = widget.product.gambarUrl!;
-      print("   ✅ Menggunakan gambarUrl: $url");
-      
-      return Image.network(
-        url,
-        height: 80,
-        width: 80,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) {
-            print("   ✅ Gambar berhasil dimuat: ${widget.product.namaProduk}");
-            return child;
-          }
-          return Container(
-            height: 80,
-            width: 80,
-            child: Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.green,
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) {
-          print("   ❌ ERROR loading gambar: ${widget.product.namaProduk}");
-          print("   ❌ Error detail: $error");
-          print("   ❌ URL: $url");
-          return Container(
-            height: 80,
-            width: 80,
-            decoration: BoxDecoration(
-              color: Colors.red[50],
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red[200]!, width: 1),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.broken_image, size: 30, color: Colors.red[300]),
-                SizedBox(height: 4),
-                Text('Error', style: TextStyle(fontSize: 9, color: Colors.red[600])),
-              ],
-            ),
-          );
-        },
-      );
+    String? rawUrl = widget.product.gambarUrl ?? widget.product.gambar;
+    
+    if (rawUrl == null || rawUrl.isEmpty) {
+      print("   ❌ Tidak ada URL gambar untuk: ${widget.product.namaProduk}");
+      return _buildNoImagePlaceholder();
     }
     
-    // Prioritas 2: Cek gambar (fallback)
-    if (widget.product.gambar != null && widget.product.gambar!.isNotEmpty) {
-      final url = widget.product.gambar!;
-      print("   ⚠️ gambarUrl NULL, mencoba field 'gambar': $url");
-      
-      return Image.network(
-        url,
-        height: 80,
-        width: 80,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          print("   ❌ Field 'gambar' juga error: $error");
-          return _buildNoImagePlaceholder();
-        },
-      );
+    // PENTING: FIX URL DENGAN ImageHelper
+    final fixedUrl = ImageHelper.fixUrlWithLog(rawUrl);
+    
+    if (fixedUrl == null) {
+      print("   ❌ URL tidak valid setelah di-fix: $rawUrl");
+      return _buildNoImagePlaceholder();
     }
     
-    // Jika semua NULL
-    print("   ❌ Tidak ada URL gambar sama sekali untuk: ${widget.product.namaProduk}");
-    return _buildNoImagePlaceholder();
+    return Image.network(
+      fixedUrl,
+      height: 80,
+      width: 80,
+      fit: BoxFit.cover,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          print("   ✅ Gambar berhasil dimuat: ${widget.product.namaProduk}");
+          return child;
+        }
+        return Container(
+          height: 80,
+          width: 80,
+          child: Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.green,
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        print("   ❌ ERROR loading gambar: ${widget.product.namaProduk}");
+        print("   ❌ Error detail: $error");
+        print("   ❌ Fixed URL: $fixedUrl");
+        return Container(
+          height: 80,
+          width: 80,
+          decoration: BoxDecoration(
+            color: Colors.red[50],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.red[200]!, width: 1),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.broken_image, size: 30, color: Colors.red[300]),
+              SizedBox(height: 4),
+              Text('Error', style: TextStyle(fontSize: 9, color: Colors.red[600])),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildNoImagePlaceholder() {

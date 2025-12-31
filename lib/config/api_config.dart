@@ -1,6 +1,6 @@
 class ApiConfig {
   
-  static const String _serverIp = ""; 
+  static const String _serverIp = "10.121.188.89"; 
   static const String _serverPort = "8000";
 
   static const String baseUrl = "http://$_serverIp:$_serverPort/api";
