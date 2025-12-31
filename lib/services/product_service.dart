@@ -1,19 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-// Import Config
 import '../config/api_config.dart';
-// Import Model (PASTIKAN NAMA FILENYA BENAR)
-// Jika file model kamu namanya 'produk.dart', pakai ini:
 import '../models/product_model.dart'; 
 
 class ProdukService {
-  
-  // 1. Fungsi Ambil Semua Produk
   Future<List<ProdukModel>> getAllProducts() async {
     try {
       final Uri url = Uri.parse(ApiConfig.products);
       
-      // CCTV 1: Cek URL yang ditembak
+    
       print("--- MEMULAI REQUEST KE: $url ---"); 
 
       final response = await http.get(url);

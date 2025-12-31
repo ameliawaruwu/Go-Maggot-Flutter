@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'keranjang.dart'; 
 import 'detail_produk.dart'; 
+import 'cart_helper.dart';
+
 
 // 1. IMPORT MODEL
 import 'models/product_model.dart'; 
@@ -8,8 +10,8 @@ import 'models/product_model.dart';
 // 2. IMPORT SERVICE
 import '../services/product_service.dart'; 
 
-// 3. IMPORT CART HELPER
-import 'cart_helper.dart'; 
+// 3. IMPORT IMAGE HELPER (PENTING!)
+import '../utils/image_helper.dart';
 
 class ProductContent extends StatefulWidget {
   const ProductContent({super.key});
@@ -22,7 +24,8 @@ class _ProductContentState extends State<ProductContent> {
   List<ProdukModel> _allProducts = []; 
   bool _isLoading = true; 
 
-  String selectedCategory = 'BSF'; 
+  // Default kategori 'Semua' agar data langsung muncul
+  String selectedCategory = 'Semua'; 
   String searchQuery = ''; 
   final TextEditingController _searchController = TextEditingController();
 
@@ -42,9 +45,7 @@ class _ProductContentState extends State<ProductContent> {
           _isLoading = false; 
         });
         
-        print("========================================");
-        print("✅ DATA MASUK: ${_allProducts.length} produk");
-        print("========================================");
+        print("✅ DATA BERHASIL DIMUAT: ${_allProducts.length} produk");
       }
     } catch (e) {
       print("❌ Error ambil data di UI: $e");
@@ -52,14 +53,19 @@ class _ProductContentState extends State<ProductContent> {
     }
   }
 
+  // LOGIKA FILTERING: Mendukung kategori Paket/Bundling
   List<ProdukModel> get _filteredProducts {
     return _allProducts.where((product) {
+      // Normalisasi teks
       String katDb = product.kategori.toLowerCase().trim();
       String katTab = selectedCategory.toLowerCase().trim();
       String nama = product.namaProduk.toLowerCase();
       String cari = searchQuery.toLowerCase();
 
-      bool matchCategory = katDb == katTab;
+      // 1. Logika Kategori (Termasuk pengecekan Paket)
+      bool matchCategory = selectedCategory == 'Semua' || katDb == katTab;
+      
+      // 2. Logika Pencarian Nama
       bool matchSearch = nama.contains(cari);
 
       return matchCategory && matchSearch;
@@ -75,9 +81,10 @@ class _ProductContentState extends State<ProductContent> {
           setState(() {
             selectedCategory = title;
           });
+          print("👉 Filter Kategori: $title");
         },
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          margin: const EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : const Color(0xFF688969),
             borderRadius: BorderRadius.circular(8),
@@ -88,7 +95,7 @@ class _ProductContentState extends State<ProductContent> {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: title.length > 10 ? 12 : 14,
+              fontSize: 11,
               color: isSelected ? Colors.green.shade800 : Colors.white,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
@@ -117,6 +124,7 @@ class _ProductContentState extends State<ProductContent> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 15),
+                // SEARCH BAR
                 Row(
                   children: [
                     Expanded(
@@ -130,7 +138,7 @@ class _ProductContentState extends State<ProductContent> {
                           controller: _searchController,
                           onChanged: (value) => setState(() => searchQuery = value),
                           decoration: const InputDecoration(
-                            hintText: 'Cari...',
+                            hintText: 'Cari produk...',
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.search, color: Colors.black54),
                           ),
@@ -138,21 +146,23 @@ class _ProductContentState extends State<ProductContent> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Container(
-                      decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(10)),
-                      child: IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
-                        onPressed: () => Navigator.pushNamed(context, '/cart'), 
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pushNamed(context, '/cart'), 
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
+                
+                // TAB KATEGORI
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    _buildCategoryTab(context, 'Semua'),
                     _buildCategoryTab(context, 'BSF'),
                     _buildCategoryTab(context, 'Kandang Maggot'),
                     _buildCategoryTab(context, 'Kompos'),
+                    _buildCategoryTab(context, 'Lainnya'),
                   ],
                 ),
               ],
@@ -166,9 +176,17 @@ class _ProductContentState extends State<ProductContent> {
                   ? const Center(child: CircularProgressIndicator(color: Colors.white))
                   : _filteredProducts.isEmpty
                       ? Center(
-                          child: Text(
-                            "Belum ada produk di kategori '$selectedCategory'.", 
-                            style: const TextStyle(color: Colors.white),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.search_off, size: 60, color: Colors.white38),
+                              const SizedBox(height: 10),
+                              Text(
+                                "Produk tidak ditemukan di kategori '$selectedCategory'", 
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ],
                           ),
                         )
                       : GridView.builder(
@@ -227,14 +245,71 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _buildProductImage() {
-    if (widget.product.gambarUrl != null && widget.product.gambarUrl!.isNotEmpty) {
-      return Image.network(
-        widget.product.gambarUrl!,
-        height: 80, width: 80, fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildNoImagePlaceholder(),
-      );
+    print("🖼️ Rendering gambar untuk: ${widget.product.namaProduk}");
+    
+    // Prioritas 1: Cek gambarUrl
+    String? rawUrl = widget.product.gambarUrl ?? widget.product.gambar;
+    
+    if (rawUrl == null || rawUrl.isEmpty) {
+      print("   ❌ Tidak ada URL gambar untuk: ${widget.product.namaProduk}");
+      return _buildNoImagePlaceholder();
     }
-    return _buildNoImagePlaceholder();
+    
+    // PENTING: FIX URL DENGAN ImageHelper
+    final fixedUrl = ImageHelper.fixUrlWithLog(rawUrl);
+    
+    if (fixedUrl == null) {
+      print("   ❌ URL tidak valid setelah di-fix: $rawUrl");
+      return _buildNoImagePlaceholder();
+    }
+    
+    return Image.network(
+      fixedUrl,
+      height: 80,
+      width: 80,
+      fit: BoxFit.cover,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          print("   ✅ Gambar berhasil dimuat: ${widget.product.namaProduk}");
+          return child;
+        }
+        return Container(
+          height: 80,
+          width: 80,
+          child: Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.green,
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        print("   ❌ ERROR loading gambar: ${widget.product.namaProduk}");
+        print("   ❌ Error detail: $error");
+        print("   ❌ Fixed URL: $fixedUrl");
+        return Container(
+          height: 80,
+          width: 80,
+          decoration: BoxDecoration(
+            color: Colors.red[50],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.red[200]!, width: 1),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.broken_image, size: 30, color: Colors.red[300]),
+              SizedBox(height: 4),
+              Text('Error', style: TextStyle(fontSize: 9, color: Colors.red[600])),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildNoImagePlaceholder() {

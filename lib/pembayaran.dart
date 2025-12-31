@@ -66,12 +66,13 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
         );
 
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context, 
-              MaterialPageRoute(builder: (context) => const StatusPesananPage()),
-            );
+                Future.delayed(const Duration(seconds: 2), () {
+                  if (mounted) {
+           Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => StatusPesananPage()),
+);
+
           }
         });
       } else {
