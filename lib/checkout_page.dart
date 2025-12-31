@@ -68,6 +68,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       'alamat_lengkap': '${alamatCtrl.text}, ${kotaCtrl.text}',
       'pengiriman': 'Reguler',
       'metode_pembayaran': metodeCtrl.text,
+      'total_harga': totalHarga, // Tambahkan total harga
       'items': widget.cartItems?.map((item) => {
         'idproduk': item.product.idProduk,
         'harga': item.product.harga,

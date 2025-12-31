@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
 import 'forgot_password_screen.dart';
 import 'main.dart' show RegisterRoute;
 import 'main_screen.dart';
+import 'services/auth_service.dart';
+import 'utils/session_helper.dart';
 
 const String appName = 'GoMaggot';
 const Color primaryDarkGreen = Color(0xFF385E39);
@@ -21,27 +22,49 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _rememberMe = false;
   bool _isPasswordHidden = true;
+  bool _isLoading = false;
 
-  void _attemptLogin(BuildContext context) {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  // =========================
+  // LOGIN LOGIC (API CONNECT)
+  // =========================
+  Future<void> _attemptLogin(BuildContext context) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email dan Password wajib diisi.'),
-          backgroundColor: Colors.red,
-        ),
+        const SnackBar(content: Text('Email dan Password wajib diisi')),
       );
       return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MainScreen(),
-      ),
-    );
+    setState(() => _isLoading = true);
+
+    final result = await AuthService.login(email, password);
+
+    if (!mounted) return;
+
+    setState(() => _isLoading = false);
+
+    if (result.success && result.user != null) {
+      // SIMPAN SESSION
+      await SessionHelper.saveUser(
+        result.user!.username,
+        result.user!.email,
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MainScreen()),
+      );
+    } else {
+      // TAMPILKAN PESAN SPESIFIK DARI BACKEND
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message)),
+      );
+    }
   }
 
   @override
@@ -50,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +88,14 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
+                  text: const TextSpan(
+                    style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Kaushan Script',
                       color: accentLightGreen,
                     ),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(text: 'Go'),
                       TextSpan(
                         text: 'Maggot',
@@ -86,7 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              const SizedBox(height: 32.0),
+              const SizedBox(height: 32),
+
               const Text(
                 'SELAMAT DATANG KEMBALI!',
                 style: TextStyle(
@@ -95,23 +120,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 8),
               const Text(
                 'Masukkan email dan password yang telah kamu daftarkan sebelumnya',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
-              const SizedBox(height: 40.0),
+
+              const SizedBox(height: 40),
 
               _buildTextField(
                 controller: _emailController,
-                hintText: 'Email atau No. Ponsel',
+                hintText: 'Email',
                 prefixIcon: Icons.email_outlined,
               ),
 
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 16),
 
               _buildTextField(
                 controller: _passwordController,
@@ -127,33 +150,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
 
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 8),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      SizedBox(
-                        height: 24.0,
-                        width: 24.0,
-                        child: Checkbox(
-                          value: _rememberMe,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              _rememberMe = newValue ?? false;
-                            });
-                          },
-                          checkColor: primaryDarkGreen,
-                          activeColor: Colors.white,
-                          side: const BorderSide(color: Colors.white, width: 2),
-                        ),
+                      Checkbox(
+                        value: _rememberMe,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _rememberMe = value ?? false;
+                          });
+                        },
+                        checkColor: primaryDarkGreen,
+                        activeColor: Colors.white,
+                        side: const BorderSide(color: Colors.white),
                       ),
-                      const SizedBox(width: 8.0),
-                      const Text(
-                        'Remember',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      const Text('Remember',
+                          style: TextStyle(color: Colors.white)),
                     ],
                   ),
                   TextButton(
@@ -161,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ForgotPasswordScreen(),
+                          builder: (_) => const ForgotPasswordScreen(),
                         ),
                       );
                     },
@@ -173,29 +189,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
 
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 24),
 
               ElevatedButton(
-                onPressed: () => _attemptLogin(context),
+                onPressed: _isLoading ? null : () => _attemptLogin(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: accentLightGreen,
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  elevation: 5,
-                ),
-                child: const Text(
-                  'MASUK',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                    : const Text(
+                        'MASUK',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
 
-              const SizedBox(height: 32.0),
+              const SizedBox(height: 32),
 
               Center(
                 child: Row(
@@ -203,10 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text(
                       'Belum punya akun? ',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                     TextButton(
                       onPressed: () {
@@ -215,9 +236,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         'Daftar di sini',
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
                           color: accentLightGreen,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -231,6 +251,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // =========================
+  // COMPONENT (TIDAK DIUBAH)
+  // =========================
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
@@ -242,31 +265,21 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFF0F0F0),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: TextField(
         controller: controller,
         obscureText: isPassword,
-        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 8.0),
-            child: Icon(prefixIcon, color: Colors.grey),
-          ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          prefixIcon: Icon(prefixIcon, color: Colors.grey),
           suffixIcon: suffixIcon != null
-              ? GestureDetector(
-                  onTap: onSuffixIconTap,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Icon(
-                      suffixIcon,
-                      color: primaryDarkGreen,
-                    ),
-                  ),
+              ? IconButton(
+                  icon: Icon(suffixIcon, color: primaryDarkGreen),
+                  onPressed: onSuffixIconTap,
                 )
               : null,
         ),
