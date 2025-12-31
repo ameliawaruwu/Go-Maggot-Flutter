@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'keranjang.dart'; 
-import 'main.dart'; 
 import 'chat_produk.dart';
-import 'checkout_page.dart'; // Pastikan import checkout_page.dart
+// import 'checkout_page.dart'; // Di-komen sementara agar tidak error saat testing
+import 'feedback.dart'; 
 // IMPORT MODEL YANG BENAR
 import 'models/product_model.dart'; 
 
@@ -120,6 +120,30 @@ class ProductDetailPage extends StatelessWidget {
                   const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 5),
                   Text(product.deskripsiProduk, style: const TextStyle(color: Colors.black54)),
+
+                  // --- TOMBOL BERI ULASAN (UNTUK TESTING) ---
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        // TESTING: Memanggil FeedbackPage polosan agar tidak error parameter
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FeedbackPage(), 
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.rate_review_outlined, color: primaryDarkGreen),
+                      label: const Text("Beri Ulasan Produk (Test)", style: TextStyle(color: primaryDarkGreen, fontWeight: FontWeight.bold)),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: primaryDarkGreen),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -180,32 +204,37 @@ class ProductDetailPage extends StatelessWidget {
             ),
             const VerticalDivider(width: 20, indent: 25, endIndent: 25),
             IconButton(
-              onPressed: () => _showSuccessSnackBar(context), // MENGGUNAKAN SNACKBAR
+              onPressed: () => _showSuccessSnackBar(context), 
               icon: const Icon(Icons.add_shopping_cart, color: primaryDarkGreen, size: 28),
             ),
             const SizedBox(width: 10),
-            // Expanded(
-            //   child: ElevatedButton(
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: accentLightGreen, 
-            //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            //       padding: const EdgeInsets.symmetric(vertical: 15),
-            //     ),
-            //     // onPressed: () {
-            //     //   // MASUK KE FORM CHECKOUT DENGAN DATA PRODUK
-            //     //   Navigator.push(
-            //     //     context,
-            //     //     MaterialPageRoute(
-            //     //       builder: (context) => CheckoutPage(product: product),
-            //     //     ),
-            //     //   );
-            //     // },
-            //     child: const Text(
-            //       "Beli Sekarang",
-            //       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-            //     ),
-            //   ),
-            // ),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentLightGreen, 
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                onPressed: () {
+                   // SEMENTARA DIKOMEN AGAR TIDAK ERROR SAAT TESTING FEEDBACK
+                   /*
+                   Navigator.push(
+                     context,
+                     MaterialPageRoute(
+                       builder: (context) => CheckoutPage(product: product),
+                     ),
+                   );
+                   */
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(content: Text("Fitur Checkout sedang dinonaktifkan untuk testing")),
+                   );
+                },
+                child: const Text(
+                  "Beli Sekarang",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart'; //
 import 'rating_star.dart';
-// Import file-file pendukung yang sudah kita buat tadi
 import '../models/review_model.dart';
 import '../services/feedback_service.dart';
 
@@ -12,29 +13,45 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  // State untuk menampung input user
+  // State untuk input user
   int _productQualityRating = 0;
   int _sellerServiceRating = 0;
   int _deliverySpeedRating = 0;
   String _description = '';
   bool _showName = true;
-  bool _isLoading = false; // Untuk indikator loading
+  bool _isLoading = false;
+
+  // State untuk file media
+  File? _imageFile;
+  File? _videoFile;
+  final ImagePicker _picker = ImagePicker();
 
   final Color primaryColor = const Color.fromARGB(255, 55, 89, 53);
   final Color cardColor = const Color(0xFFE4EDE1);
   final Color textColor = Colors.white;
 
-  // ==========================================================
-  // FUNGSI SUBMIT (SUDAH TERHUBUNG KE DATABASE)
-  // ==========================================================
+  // Fungsi memilih Gambar
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => _imageFile = File(pickedFile.path));
+    }
+  }
+
+  // Fungsi memilih Video
+  Future<void> _pickVideo() async {
+    final XFile? pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => _videoFile = File(pickedFile.path));
+    }
+  }
+
   void _submitFeedback() async {
-    // 1. Validasi: Jangan biarkan komentar kosong
     if (_description.trim().isEmpty) {
       _showSnackBar('Tuliskan ulasan produk Anda terlebih dahulu!');
       return;
     }
 
-    // 2. Validasi: Pastikan bintang sudah diisi
     if (_productQualityRating == 0 || _sellerServiceRating == 0) {
       _showSnackBar('Mohon berikan rating bintang.');
       return;
@@ -42,24 +59,27 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
     setState(() => _isLoading = true);
 
-    // 3. Bungkus data ke dalam Model
-    // idProduk sementara kita hardcode "PR01" (sesuaikan dengan id di database kamu)
+    // Bungkus data teks ke model
     ReviewModel reviewBaru = ReviewModel(
-      idProduk: "PR01", 
+      idProduk: "PR01", // Sesuaikan dengan ID produk Anda
       ratingSeller: _sellerServiceRating,
       komentar: _description,
       kualitas: "Bintang $_productQualityRating",
       tampilkanUsername: _showName ? 1 : 0,
     );
 
-    // 4. Kirim melalui Service
-    bool sukses = await FeedbackService.kirimReview(reviewBaru);
+    // Kirim data dan file ke Service (Gunakan fungsi Multipart)
+    bool sukses = await FeedbackService.kirimReview(
+      reviewBaru, 
+      foto: _imageFile, 
+      video: _videoFile
+    );
 
     setState(() => _isLoading = false);
 
     if (sukses) {
       _showSnackBar('Ulasan produk berhasil dikirim! ❤️');
-      if (mounted) Navigator.pop(context); // Balik ke halaman sebelumnya
+      if (mounted) Navigator.pop(context);
     } else {
       _showSnackBar('Gagal mengirim ulasan. Cek Login atau Koneksi Anda.');
     }
@@ -69,21 +89,33 @@ class _FeedbackPageState extends State<FeedbackPage> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(pesan)));
   }
 
-  // Widget untuk tombol unggah media (Visual saja untuk sekarang)
-  Widget _buildMediaUploadButton(IconData icon, String label) {
+  Widget _buildMediaButton(IconData icon, String label, File? file, VoidCallback onTap) {
     return Expanded(
-      child: Container(
-        height: 80,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        child: ElevatedButton(
-          onPressed: () => debugPrint('Memilih $label'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 0,
+      child: Column(
+        children: [
+          Container(
+            height: 80,
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            child: ElevatedButton(
+              onPressed: onTap,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: file != null ? Colors.lightGreen : cardColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                elevation: 0,
+              ),
+              child: Icon(
+                file != null ? Icons.check_circle : icon, 
+                size: 40, 
+                color: primaryColor
+              ),
+            ),
           ),
-          child: Icon(icon, size: 40, color: primaryColor),
-        ),
+          const SizedBox(height: 4),
+          Text(
+            file != null ? "Berhasil dipilih" : label,
+            style: const TextStyle(color: Colors.white, fontSize: 10),
+          ),
+        ],
       ),
     );
   }
@@ -95,59 +127,45 @@ class _FeedbackPageState extends State<FeedbackPage> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Nilai Produk',
-          style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-        ),
+        title: Text('Nilai Produk', style: TextStyle(color: textColor)),
         actions: [
-          // Jika sedang loading, tampilkan spinner kecil
           _isLoading 
-          ? const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
-            )
-          : TextButton(
-              onPressed: _submitFeedback,
-              child: Text('Submit', style: TextStyle(color: textColor, fontSize: 16)),
-            ),
+          ? const Center(child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: CircularProgressIndicator(color: Colors.white)))
+          : TextButton(onPressed: _submitFeedback, child: Text('Submit', style: TextStyle(color: textColor, fontSize: 16))),
         ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Kualitas Produk', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w500)),
+          children: [
+            Text('Kualitas Produk', style: TextStyle(color: textColor, fontSize: 18)),
             const SizedBox(height: 10),
             InteractiveRatingStars(onRatingChanged: (rating) => setState(() => _productQualityRating = rating)),
             
             const SizedBox(height: 20),
-            Text('Deskripsi:', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w500)),
+            Text('Deskripsi:', style: TextStyle(color: textColor, fontSize: 18)),
             const SizedBox(height: 10),
             Container(
-              height: 200,
+              height: 150,
               decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(10)),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  maxLines: null,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: 'Tuliskan ulasan produk Anda di sini...',
-                    hintStyle: TextStyle(color: Colors.black54),
-                  ),
-                  onChanged: (value) => _description = value,
-                ),
+              padding: const EdgeInsets.all(12),
+              child: TextField(
+                maxLines: null,
+                decoration: const InputDecoration.collapsed(hintText: 'Tuliskan ulasan Anda...'),
+                onChanged: (value) => _description = value,
               ),
             ),
             
             const SizedBox(height: 20),
-            Text('Tambahkan gambar atau video:', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w500)),
+            Text('Tambahkan gambar atau video:', style: TextStyle(color: textColor, fontSize: 18)),
             const SizedBox(height: 10),
-            Row(children: [_buildMediaUploadButton(Icons.image_outlined, 'gambar'), _buildMediaUploadButton(Icons.video_library_outlined, 'video')]),
+            Row(
+              children: [
+                _buildMediaButton(Icons.image_outlined, 'Foto', _imageFile, _pickImage),
+                _buildMediaButton(Icons.video_library_outlined, 'Video', _videoFile, _pickVideo),
+              ],
+            ),
             
             const SizedBox(height: 30),
             Row(
@@ -156,7 +174,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 Text('Tampilkan Nama', style: TextStyle(color: textColor, fontSize: 18)),
                 Switch(
                   value: _showName,
-                  onChanged: (value) => setState(() => _showName = value),
+                  onChanged: (val) => setState(() => _showName = val),
                   activeColor: cardColor,
                 ),
               ],
@@ -166,11 +184,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
             Text('Pelayanan Penjual', style: TextStyle(color: textColor, fontSize: 18)),
             const SizedBox(height: 10),
             InteractiveRatingStars(onRatingChanged: (rating) => setState(() => _sellerServiceRating = rating)),
-            
-            const SizedBox(height: 20),
-            Text('Kecepatan Pengiriman', style: TextStyle(color: textColor, fontSize: 18)),
-            const SizedBox(height: 10),
-            InteractiveRatingStars(onRatingChanged: (rating) => setState(() => _deliverySpeedRating = rating)),
           ],
         ),
       ),
