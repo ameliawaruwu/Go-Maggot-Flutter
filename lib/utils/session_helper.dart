@@ -9,12 +9,15 @@ class SessionHelper {
   // --- TOKEN MANAGEMENT ---
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
+    // Tambahkan log untuk memudahkan debug saat development
+    print("SessionHelper: Menyimpan Token Baru: $token");
     await prefs.setString(_tokenKey, token);
   }
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_tokenKey);
+    final token = prefs.getString(_tokenKey);
+    return token;
   }
 
   // --- USER DATA MANAGEMENT ---
