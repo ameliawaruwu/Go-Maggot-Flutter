@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // supaya bisa pakai Navigator.pop dan theme yg sama (opsional)
+import 'services/faq_service.dart'; 
+import 'models/faq_model.dart';    
 
-class FAQPage extends StatelessWidget {
+class FAQPage extends StatefulWidget {
   const FAQPage({super.key});
+
+  @override
+  State<FAQPage> createState() => _FAQPageState();
+}
+
+class _FAQPageState extends State<FAQPage> {
+  final FaqService _faqService = FaqService();
 
   @override
   Widget build(BuildContext context) {
     const Color bgDarkGreen = Color(0xFF163822);
     const Color headerGreen = Color(0xFF4F6F3E);
-    const Color cardBg = Colors.white;
-    const Color bubbleGreen = Color(0xFF6E9E4F);
 
     return Scaffold(
       backgroundColor: bgDarkGreen,
@@ -21,7 +27,7 @@ class FAQPage extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: const BoxDecoration(
-                color: Color(0xFF4F6F3E),
+                color: headerGreen,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
@@ -37,11 +43,7 @@ class FAQPage extends StatelessWidget {
                   const SizedBox(width: 4),
                   const Text(
                     'FAQ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
@@ -49,39 +51,36 @@ class FAQPage extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // ===== LIST FAQ =====
+            // ===== LIST FAQ DINAMIS =====
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: const [
-                  FAQCard(
-                    question: 'Apakah maggot aman digunakan?',
-                    answer:
-                        'Maggot dapat digunakan sebagai alternatif pengurai sampah, '
-                        'dan aman untuk pakan ternak karena bukan termasuk lalat penyebar penyakit.',
-                  ),
-                  FAQCard(
-                    question: 'Apakah pembayaran dapat COD?',
-                    answer:
-                        'Pembayaran tidak dapat dilakukan dengan COD. '
-                        'Pembayaran dilakukan secara non-tunai.',
-                  ),
-                  FAQCard(
-                    question: 'Bagaimana cara membayarnya?',
-                    answer:
-                        'Anda dapat melakukan pembayaran lewat transfer bank, '
-                        'm-banking, atau dompet digital seperti gopay, shopeepay, dan ovo.',
-                  ),
-                  FAQCard(
-                    question: 'Bagaimana cara melakukan pembelian di toko ini?',
-                    answer:
-                        'Pilih navigasi produk, pilih produk yang ingin dibeli, '
-                        'kemudian lanjutkan proses checkout hingga pembayaran selesai.',
-                  ),
-                  SizedBox(height: 12),
-                  _AskSection(),
-                  SizedBox(height: 16),
-                ],
+              child: FutureBuilder<List<FaqModel>>(
+                future: _faqService.fetchFaqs(), 
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator(color: Colors.white));
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text("Gagal memuat data", style: TextStyle(color: Colors.white)));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text("Belum ada FAQ", style: TextStyle(color: Colors.white)));
+                  }
+
+                  final faqs = snapshot.data!;
+
+                  return ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: [
+                      // Menggunakan spread operator tanpa .toList() untuk efisiensi
+                      ...faqs.map((faq) => FAQCard(
+                        question: faq.pertanyaan,
+                        answer: faq.jawaban,
+                      )),
+                      
+                      const SizedBox(height: 12),
+                      const _AskSection(),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -91,23 +90,19 @@ class FAQPage extends StatelessWidget {
   }
 }
 
-class FAQCard extends StatelessWidget {
-  const FAQCard({
-    super.key,
-    required this.question,
-    required this.answer,
-  });
+// --- CLASS INI HARUS BERADA DI LUAR _FAQPageState ---
 
+class FAQCard extends StatelessWidget {
   final String question;
   final String answer;
 
+  const FAQCard({super.key, required this.question, required this.answer});
+
   @override
   Widget build(BuildContext context) {
-    const Color bubbleGreen = Color(0xFF6E9E4F);
-
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFFEFF5EA),
         borderRadius: BorderRadius.circular(16),
@@ -115,42 +110,28 @@ class FAQCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // bubble hijau di kiri
           Container(
-            width: 60,
-            height: 60,
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
-              color: bubbleGreen,
-              borderRadius: BorderRadius.circular(18),
+              color: const Color(0xFF6E9E4F),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.question_answer_rounded,
-              color: Colors.white,
-              size: 28,
-            ),
+            child: const Icon(Icons.question_answer_rounded, color: Colors.white, size: 24),
           ),
-          const SizedBox(width: 10),
-          // teks
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   question,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   answer,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.5,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 13, color: Colors.black54),
                 ),
               ],
             ),
@@ -167,70 +148,39 @@ class _AskSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Mau bertanya? Tulis pertanyaanmu di bawah kolom ini yaa!',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-          ),
+          'Mau bertanya? Tulis di sini ya!',
+          style: TextStyle(color: Colors.white, fontSize: 14),
         ),
         const SizedBox(height: 8),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: TextField(
-                  controller: controller,
-                  maxLines: 3,
-                  minLines: 2,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Tulis pertanyaanmu di sini...',
-                  ),
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: 'Tulis pertanyaan...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            ElevatedButton(
+            IconButton(
               onPressed: () {
-                // TODO: kirim pertanyaan ke backend / simpan
-                FocusScope.of(context).unfocus();
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pertanyaan kamu sudah terkirim.'),
-                  ),
-                );
-                controller.clear();
+                if (controller.text.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Pertanyaan terkirim!'))
+                  );
+                  controller.clear();
+                }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF497537),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: const Text(
-                'Send',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
+              icon: const Icon(Icons.send, color: Colors.white),
+            )
           ],
         ),
       ],

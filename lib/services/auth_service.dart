@@ -7,7 +7,7 @@ import '../models/login_result.dart';
 import '../utils/session_helper.dart'; // Tambahkan import
 
 class AuthService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api'; // Gunakan IP yang sama
+  static const String baseUrl = 'http://10.121.188.89:8000/api'; // Gunakan IP yang sama
 
   static Future<LoginResult> login(
     String email,
@@ -34,16 +34,20 @@ class AuthService {
         String? token = json['token'] ?? json['access_token'];
 
         // 2. SIMPAN DATA KE STORAGE (Langkah yang sebelumnya hilang)
+       // Di dalam if (response.statusCode == 200)
         if (token != null) {
-          await SessionHelper.saveToken(token); // Simpan token agar bisa dipakai di FeedbackService
-          
-          // Simpan data user (gunakan null check '??' untuk keamanan)
+          await SessionHelper.saveToken(token);
           await SessionHelper.saveUser(
-            json['user']['name'] ?? json['user']['username'] ?? 'User',
+            json['user']['username'] ?? json['user']['name'] ?? 'User',
             json['user']['email'] ?? '',
           );
-        }
 
+          // SIMPAN FOTO KE SESSION
+          if (json['user']['foto_profil'] != null) {
+            await SessionHelper.savePhoto(json['user']['foto_profil']);
+          }
+        }
+        
         return LoginResult(
           success: true,
           message: json['message'] ?? 'Login berhasil',
