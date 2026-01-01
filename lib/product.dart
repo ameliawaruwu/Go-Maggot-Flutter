@@ -158,7 +158,7 @@ class _ProductContentState extends State<ProductContent> {
                   children: [
                     _buildCategoryTab(context, 'Semua'),
                     _buildCategoryTab(context, 'BSF'),
-                    _buildCategoryTab(context, 'Kandang'),
+                    _buildCategoryTab(context, 'Kandang Maggot'),
                     _buildCategoryTab(context, 'Kompos'),
                     _buildCategoryTab(context, 'Lainnya'),
                   ],

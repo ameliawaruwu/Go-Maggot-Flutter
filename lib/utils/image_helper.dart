@@ -28,7 +28,7 @@ class ImageHelper {
       finalUrl = finalUrl
           .replaceAll('localhost', activeHost)
           .replaceAll('127.0.0.1', activeHost)
-          .replaceAll('10.121.188.89', activeHost); 
+          .replaceAll('192.168.1.12', activeHost); 
     } else {
       // Jika URL relatif
       String serverRoot = ApiConfig.baseUrl;

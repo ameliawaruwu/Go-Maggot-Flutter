@@ -1,75 +1,53 @@
 import 'package:flutter/material.dart';
-import 'bantuan.dart'; 
-import 'faq_page.dart'; 
+import 'bantuan.dart';
+import 'faq_page.dart';
+import 'favorit_page.dart';
+import 'voucher_page.dart';
 
 class ProfileContent extends StatelessWidget {
   const ProfileContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // --- PALET WARNA (Sesuai Kode Awal) ---
-    final Color darkGreenBg = const Color(0xFF385E39);   // Hijau tua background
-    final Color lightGreenBtn = const Color(0xFF6C856C); // Hijau pudar untuk tombol
-    final Color whiteCard = const Color(0xFFFFFFFF);
-    final Color darkButton = const Color(0xFF1B3022);    // Hijau gelap tombol Logout
+    final Color darkGreenBg = const Color(0xFF385E39);
+    final Color lightGreenBtn = const Color(0xFF6C856C);
+    final Color whiteCard = Colors.white;
+    final Color darkButton = const Color(0xFF1B3022);
 
     return Scaffold(
       backgroundColor: darkGreenBg,
 
-      // --- HEADER APPBAR ---
+      // ================= APPBAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: const BackButton(color: Colors.white),
         title: const Text(
           "Profil Saya",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: false,
       ),
 
-      // --- BODY ---
+      // ================= BODY =================
       body: Column(
         children: [
-          // 1. BAGIAN HEADER (Foto & Info User)
+          // ---------- HEADER ----------
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: Column(
               children: [
-                // Baris Foto & Nama
                 Row(
                   children: [
-                    // Foto Profil Lingkaran
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/profile_pic.png',
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.person,
-                              size: 50,
-                              color: Colors.grey,
-                            );
-                          },
-                        ),
-                      ),
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      child: const Icon(Icons.person, size: 45, color: Colors.grey),
                     ),
                     const SizedBox(width: 20),
-                    // Teks Nama & Email
-                    Expanded(
+                    const Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Riri",
                             style: TextStyle(
@@ -81,11 +59,7 @@ class ProfileContent extends StatelessWidget {
                           SizedBox(height: 5),
                           Text(
                             "riri@example.gmail.com",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.white70, fontSize: 12),
                           ),
                         ],
                       ),
@@ -93,77 +67,93 @@ class ProfileContent extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 25),
-
-                // Baris Tombol Pesanan & Ulasan
                 Row(
                   children: [
-                    Expanded(
-                      child: _buildHeaderButton("Pesanan", lightGreenBtn),
-                    ),
+                    Expanded(child: _headerButton("Pesanan", lightGreenBtn)),
                     const SizedBox(width: 15),
-                    Expanded(
-                      child: _buildHeaderButton("Ulasan", lightGreenBtn),
-                    ),
+                    Expanded(child: _headerButton("Ulasan", lightGreenBtn)),
                   ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
 
-          // 2. BAGIAN BODY (Kartu Putih Melengkung)
+          // ---------- CARD PUTIH ----------
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(
-                top: 30,
-                left: 24,
-                right: 24,
-                bottom: 20,
-              ),
-              decoration: BoxDecoration(
-                color: whiteCard,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
+              padding: const EdgeInsets.fromLTRB(24, 30, 24, 20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 children: [
-                  // List Menu
-                  _buildMenuItem(context, "Akun Saya", null),
-                  _buildMenuItem(context, "Notifikasi", null),
-                  _buildMenuItem(context, "Bahasa", null),
+                  _menuItem(
+                    context,
+                    icon: Icons.person_outline,
+                    text: "Akun Saya",
+                  ),
 
-                  // Menu dengan Navigasi Khusus
-                  _buildMenuItem(context, "Bantuan", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BantuanPage(),
-                      ),
-                    );
-                  }),
+                  _menuItem(
+                    context,
+                    icon: Icons.notifications_none,
+                    text: "Notifikasi",
+                    showDot: true,
+                  ),
 
-                  _buildMenuItem(context, "FAQ", () {
-                    Navigator.push(
+                  _menuItem(
+                    context,
+                    icon: Icons.language,
+                    text: "Bahasa",
+                  ),
+
+                  _menuItem(
+                    context,
+                    icon: Icons.favorite_border,
+                    text: "Favorit Saya",
+                    onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const FAQPage(),
-                      ),
-                    );
-                  }),
+                      MaterialPageRoute(builder: (_) => FavoritPage()),
+                    ),
+                  ),
+
+                  _menuItem(
+                    context,
+                    icon: Icons.card_giftcard,
+                    text: "Voucher Saya",
+                    label: "Baru",
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const VoucherPage()),
+                    ),
+                  ),
+
+                  _menuItem(
+                    context,
+                    icon: Icons.help_outline,
+                    text: "Bantuan",
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const BantuanPage()),
+                    ),
+                  ),
+
+                  _menuItem(
+                    context,
+                    icon: Icons.question_answer_outlined,
+                    text: "FAQ",
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const FAQPage()),
+                    ),
+                  ),
 
                   const Spacer(),
 
-                  // Tombol Keluar (Logout)
+                  // ---------- LOGOUT ----------
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Kembali ke halaman Login (Route '/')
-                        // pushNamedAndRemoveUntil agar tidak bisa kembali ke profil setelah logout
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: darkButton,
                         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -171,6 +161,13 @@ class ProfileContent extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
+                      onPressed: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/',
+                          (route) => false,
+                        );
+                      },
                       child: const Text(
                         "KELUAR",
                         style: TextStyle(
@@ -180,7 +177,6 @@ class ProfileContent extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -190,60 +186,114 @@ class ProfileContent extends StatelessWidget {
     );
   }
 
-  // WIDGET TOMBOL ATAS
-  Widget _buildHeaderButton(String text, Color color) {
+  // ================= HEADER BUTTON =================
+  static Widget _headerButton(String text, Color color) {
     return ElevatedButton(
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
+        elevation: 0,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        elevation: 0,
       ),
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.white, fontSize: 16),
-      ),
+      child: Text(text, style: const TextStyle(color: Colors.white)),
     );
   }
 
-  // WIDGET ITEM MENU
-  Widget _buildMenuItem(
-    BuildContext context,
-    String text,
+  // ================= MENU ITEM =================
+  static Widget _menuItem(
+    BuildContext context, {
+    required IconData icon,
+    required String text,
     VoidCallback? onTap,
-  ) {
+    bool showDot = false,
+    String? label,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.black12, width: 1),
-          ),
-        ),
         padding: const EdgeInsets.only(bottom: 10),
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.black12)),
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1B3022),
+            _iconWithBadge(icon, showDot: showDot, label: label),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1B3022),
+                ),
               ),
             ),
-            const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.black87,
-            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
           ],
         ),
       ),
+    );
+  }
+
+  // ================= ICON + BADGE =================
+  static Widget _iconWithBadge(
+    IconData icon, {
+    bool showDot = false,
+    String? label,
+  }) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: const Color(0xFF6E9E4F).withOpacity(0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: const Color(0xFF385E39), size: 20),
+        ),
+
+        if (showDot)
+          Positioned(
+            top: -2,
+            right: -2,
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+
+        if (label != null)
+          Positioned(
+            top: -10,
+            right: -12,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 9,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
