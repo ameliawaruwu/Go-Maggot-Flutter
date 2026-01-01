@@ -56,10 +56,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
-  # --- 1. ASET (untuk gambar) ---
-  assets: 
-    - assets/ 
+
+  assets:
+    - assets/
+
   
   # --- 2. FONT (untuk logo) ---
   fonts: 
