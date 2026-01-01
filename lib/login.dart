@@ -46,19 +46,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = false);
 
-    if (result.success && result.user != null) {
-      // SIMPAN SESSION
-      await SessionHelper.saveUser(
-        result.user!.username,
-        result.user!.email,
-      );
+    // Perbaiki bagian ini di login.dart
+if (result.success && result.user != null) {
+  // Ambil token dari result (Pastikan LoginResult punya field token)
+  // Jika AuthService sudah menyimpan token di SessionHelper, 
+  // pastikan SessionHelper.saveToken(token) benar-benar terpanggil.
 
-      if (!mounted) return;
+  await SessionHelper.saveUser(
+    result.user!.username,
+    result.user!.email,
+  );
+  
+  // Tambahkan pengecekan ini untuk memastikan token tersimpan
+  String? checkToken = await SessionHelper.getToken();
+  print("Token saat ini: $checkToken"); 
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const MainScreen()),
-      );
+  if (!mounted) return;
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (_) => const MainScreen()),
+  );
     } else {
       // TAMPILKAN PESAN SPESIFIK DARI BACKEND
       ScaffoldMessenger.of(context).showSnackBar(
@@ -66,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
+  
   @override
   void dispose() {
     _emailController.dispose();

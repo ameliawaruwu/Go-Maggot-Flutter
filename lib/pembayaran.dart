@@ -36,59 +36,68 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   // FUNGSI KIRIM KE SERVICE
-  Future<void> _submitPayment() async {
-    if (_imageFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pilih bukti bayar terlebih dahulu!'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+ // FUNGSI KIRIM KE SERVICE - UPDATE BAGIAN INI
+Future<void> _submitPayment() async {
+  if (_imageFile == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Pilih bukti bayar terlebih dahulu!'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
 
-    setState(() => _isLoading = true);
+  setState(() => _isLoading = true);
 
-    try {
-      // MEMANGGIL SERVICE UPLOAD
-      bool isSuccess = await _pembayaranService.uploadBuktiBayar(
-        widget.orderId, 
-        _imageFile!
-      );
+  try {
+    // MEMANGGIL SERVICE UPLOAD
+    bool isSuccess = await _pembayaranService.uploadBuktiBayar(
+      widget.orderId, 
+      _imageFile!
+    );
 
-      if (isSuccess) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Pembayaran Pesanan ${widget.orderId} Berhasil Dikirim!'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-
-                Future.delayed(const Duration(seconds: 2), () {
-                  if (mounted) {
-           Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(builder: (context) => StatusPesananPage()),
-);
-
-          }
-        });
-      } else {
-        throw Exception('Gagal mengunggah ke server');
-      }
-    } catch (e) {
+    if (isSuccess && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}'),
-          backgroundColor: Colors.red,
+          content: Text('Pembayaran Pesanan ${widget.orderId} Berhasil Dikirim!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
         ),
       );
-    } finally {
+
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => StatusPesananPage()),
+          );
+        }
+      });
+    }
+  } on SocketException {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Tidak ada koneksi internet'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(e.toString().replaceAll('Exception: ', '')),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  } finally {
+    if (mounted) {
       setState(() => _isLoading = false);
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
