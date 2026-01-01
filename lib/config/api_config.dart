@@ -1,5 +1,5 @@
 class ApiConfig {
-  static const String _serverIp = "10.121.188.89";
+  static const String _serverIp = "10.0.2.2";
   static const String _serverPort = "8000";
 
   // Base URL Utama: http://10.0.2.2:8000/api
@@ -39,8 +39,8 @@ class ApiConfig {
   static const String checkoutProcess = "$baseUrl/checkout/process";
   static const String uploadPaymentProof = "$baseUrl/pembayaran/upload";
 
-  // status pesanan
-  static const String orderStatus = "$baseUrl/pesanan-saya";
+  // Status Pesanan
+   static const String orderStatus = "$baseUrl/pesanan-saya";
   
   // Helper untuk ganti IP (jika pakai device fisik)
   static String getBaseUrlWithCustomIP(String ip) {

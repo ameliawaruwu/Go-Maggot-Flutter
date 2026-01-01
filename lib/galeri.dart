@@ -18,7 +18,6 @@ class _GaleriPageState extends State<GaleriPage> {
   @override
   void initState() {
     super.initState();
-    // Inisialisasi pengambilan data saat widget pertama kali dimuat
     futureGaleri = GaleriService().fetchGaleri();
   }
 
@@ -90,9 +89,68 @@ class _GaleriPageState extends State<GaleriPage> {
 
                   final dataGaleri = snapshot.data!;
 
-                  return _buildGallerySection(
-                    title: "Koleksi Kegiatan Kami",
-                    items: dataGaleri,
+                  return Column(
+                    children: [
+                      // Bagian Carousel (Tetap di atas)
+                      _buildGallerySection(
+                        title: "Koleksi Kegiatan Kami",
+                        items: dataGaleri,
+                      ),
+                      
+                      const SizedBox(height: 30),
+
+                      // BAGIAN TAMBAHAN: Grid View agar halaman penuh
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Semua Foto",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryDarkGreen),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      GridView.builder(
+                        shrinkWrap: true, // Agar GridView tidak error di dalam Column
+                        physics: const NeverScrollableScrollPhysics(), // Scroll mengikuti halaman utama
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // 2 kolom foto
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 1, // Foto berbentuk kotak (square)
+                        ),
+                        itemCount: dataGaleri.length,
+                        itemBuilder: (context, index) {
+                          final item = dataGaleri[index];
+                          return InkWell(
+                            onTap: () => _showLargeImage(context, item.gambarUrl),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.network(
+                                  Uri.encodeFull(item.gambarUrl ?? ''),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => 
+                                    const Icon(Icons.broken_image),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   );
                 },
               ),
@@ -117,14 +175,30 @@ class _GaleriPageState extends State<GaleriPage> {
         ),
         const SizedBox(height: 15),
         SizedBox(
-          height: 250, // Ditinggikan sedikit untuk menampung teks keterangan
+          height: 250,
           child: _GalleryCarousel(items: items, primaryColor: primaryDarkGreen),
         ),
       ],
     );
   }
+
+  // Fungsi helper dipindah ke level class agar bisa dipanggil dari mana saja
+  void _showLargeImage(BuildContext context, String? url) {
+    if (url == null) return;
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Image.network(url, fit: BoxFit.contain),
+        ),
+      ),
+    );
+  }
 }
 
+// ... Sisanya tetap sama (_GalleryCarousel dan _GalleryCarouselState) ...
 class _GalleryCarousel extends StatefulWidget {
   final List<GaleriModel> items;
   final Color primaryColor;
@@ -170,27 +244,22 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
-                      onTap: () => _showLargeImage(context, item.gambarUrl),
+                      onTap: () {
+                        // Memanggil fungsi dari parent
+                        final state = context.findAncestorStateOfType<_GaleriPageState>();
+                        state?._showLargeImage(context, item.gambarUrl);
+                      },
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          // IMAGE NETWORK (Dari Laravel)
-                         Image.network(
-                            // Menangani spasi agar menjadi %20 secara otomatis
+                          Image.network(
                             Uri.encodeFull(item.gambarUrl ?? ''), 
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[200],
-                                child: const Icon(Icons.broken_image, size: 50),
-                              );
-                            },
+                            errorBuilder: (context, error, stackTrace) => 
+                              const Icon(Icons.broken_image, size: 50),
                           ),
-                          // Keterangan Overlay
                           Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
+                            bottom: 0, left: 0, right: 0,
                             child: Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
@@ -218,7 +287,6 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
           ),
         ),
         const SizedBox(height: 10),
-        // Indicator Dots
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(widget.items.length, (index) {
@@ -235,20 +303,6 @@ class _GalleryCarouselState extends State<_GalleryCarousel> {
           }),
         ),
       ],
-    );
-  }
-
-  void _showLargeImage(BuildContext context, String? url) {
-    if (url == null) return;
-    showDialog(
-      context: context,
-      builder: (_) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.network(url, fit: BoxFit.contain),
-        ),
-      ),
     );
   }
 }
