@@ -83,10 +83,10 @@ class MyApp extends StatelessWidget {
         ProfileRoute:  (context) => const ProfileContent(),
 
         // lainnya
-        PaymentRoute:  (context) => const PaymentPage(),
+        PaymentRoute: (context) => const PaymentPage(orderId: '0'),
         FeedbackRoute: (context) => const FeedbackPage(),
         FaqRoute:      (context) => const FAQPage(),
-        StatusRoute:   (context) => const StatusPesananPage(),
+        // StatusRoute:   (context) => const StatusPesananPage(),
       },
     );
   }

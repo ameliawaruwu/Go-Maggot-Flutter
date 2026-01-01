@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'keranjang.dart'; 
 import 'detail_produk.dart'; 
+import 'cart_helper.dart';
+
 
 // 1. IMPORT MODEL
 import 'models/product_model.dart'; 
@@ -210,7 +212,6 @@ class _ProductContentState extends State<ProductContent> {
 
 class ProductCard extends StatefulWidget {
   final ProdukModel product; 
-
   const ProductCard({super.key, required this.product});
 
   @override
@@ -220,12 +221,25 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   bool isFavorite = false;
 
-  void _showCartNotification(BuildContext context) {
+  // LOGIKA TAMBAH KE KERANJANG LOKAL
+  Future<void> _handleAddToCart() async {
+    await CartHelper.addToCart(widget.product);
+  }
+
+  void _showCartNotification(BuildContext context) async {
+    await _handleAddToCart(); // Jalankan penyimpanan data
+
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${widget.product.namaProduk} masuk keranjang!'),
         duration: const Duration(seconds: 1),
         backgroundColor: Colors.green.shade700,
+        action: SnackBarAction(
+          label: 'LIHAT',
+          textColor: Colors.white,
+          onPressed: () => Navigator.pushNamed(context, '/cart'),
+        ),
       ),
     );
   }
@@ -300,20 +314,9 @@ class _ProductCardState extends State<ProductCard> {
 
   Widget _buildNoImagePlaceholder() {
     return Container(
-      height: 80,
-      width: 80,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.image_not_supported, size: 30, color: Colors.grey[400]),
-          SizedBox(height: 4),
-          Text('No Image', style: TextStyle(fontSize: 9, color: Colors.grey[600])),
-        ],
-      ),
+      height: 80, width: 80,
+      decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
+      child: Icon(Icons.image_not_supported, size: 30, color: Colors.grey[400]),
     );
   }
 
@@ -358,14 +361,13 @@ class _ProductCardState extends State<ProductCard> {
             Text(
               widget.product.namaProduk, 
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14), 
-              maxLines: 2, 
-              overflow: TextOverflow.ellipsis
+              maxLines: 2, overflow: TextOverflow.ellipsis
             ),
             Text(
               hargaFormatted, 
               style: TextStyle(color: Colors.green.shade700, fontWeight: FontWeight.bold)
             ),
-            const SizedBox(height: 5),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -389,10 +391,8 @@ class _ProductCardState extends State<ProductCard> {
                       child: const Text(
                         'Detail', 
                         style: TextStyle(
-                          color: Colors.black54, 
-                          fontSize: 12, 
-                          fontWeight: FontWeight.bold, 
-                          decoration: TextDecoration.underline
+                          color: Colors.black54, fontSize: 12, 
+                          fontWeight: FontWeight.bold, decoration: TextDecoration.underline
                         )
                       ),
                     ),
@@ -400,8 +400,7 @@ class _ProductCardState extends State<ProductCard> {
                     GestureDetector(
                       onTap: () => _showCartNotification(context),
                       child: Container(
-                        width: 24, 
-                        height: 24,
+                        width: 24, height: 24,
                         decoration: BoxDecoration(
                           color: Colors.green.shade700, 
                           borderRadius: BorderRadius.circular(5)

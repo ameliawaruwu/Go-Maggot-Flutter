@@ -3,17 +3,17 @@ class ApiConfig {
   static const String _serverIp = "192.168.1.12"; 
   static const String _serverPort = "8000";
 
+  // Base URL Utama: http://10.0.2.2:8000/api
   static const String baseUrl = "http://$_serverIp:$_serverPort/api";
 
+  // Auth
   static const String login = "$baseUrl/login";
   static const String register = "$baseUrl/register";
-  
   static const String logout = "$baseUrl/logout"; 
   static const String profile = "$baseUrl/profile"; 
 
+  // Products
   static const String products = "$baseUrl/produk";
-  
- 
   static String productDetail(dynamic id) => "$baseUrl/produk/$id";
 
   // Fitur Lain
@@ -25,7 +25,7 @@ class ApiConfig {
   static const String articles = "$baseUrl/artikel";
   static String articleDetail(dynamic id) => "$baseUrl/artikel/$id";
 
- 
+  // Dashboard
   static const String dashboardPelanggan = "$baseUrl/dashboard/pelanggan";
   
   // Pesanan Saya
@@ -34,6 +34,17 @@ class ApiConfig {
   
   // Pembayaran Saya
   static const String myPayments = "$baseUrl/pembayaran-saya";
-
   static String orderDetailItems(dynamic idPesanan) => "$baseUrl/pesanan/$idPesanan/detail";
+
+  // ✅ TAMBAHKAN INI - Endpoint Checkout
+  static const String checkoutProcess = "$baseUrl/checkout/process";
+  static const String uploadPaymentProof = "$baseUrl/pembayaran/upload";
+
+  // Status Pesanan
+   static const String orderStatus = "$baseUrl/pesanan-saya";
+  
+  // Helper untuk ganti IP (jika pakai device fisik)
+  static String getBaseUrlWithCustomIP(String ip) {
+    return "http://$ip:$_serverPort/api";
+  }
 }

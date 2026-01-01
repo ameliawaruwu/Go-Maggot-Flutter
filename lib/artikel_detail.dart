@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'models/artikel_model.dart';
 
 class ArtikelDetailPage extends StatelessWidget {
-  const ArtikelDetailPage({super.key});
+  // 1. Tambahkan parameter untuk menerima data artikel
+  final ArtikelModel artikel;
+
+  const ArtikelDetailPage({super.key, required this.artikel});
 
   @override
   Widget build(BuildContext context) {
@@ -10,9 +15,8 @@ class ArtikelDetailPage extends StatelessWidget {
     const Color lightCardGreen = Color(0xFFE4EDE5);   // Hijau Pucat (Background)
     
     return Scaffold(
-      backgroundColor: lightCardGreen, // Background Hijau Pucat
+      backgroundColor: lightCardGreen, 
       
-      // --- HEADER ---
       appBar: AppBar(
         backgroundColor: primaryDarkGreen,
         elevation: 0,
@@ -24,7 +28,6 @@ class ArtikelDetailPage extends StatelessWidget {
           "Detail Artikel",
           style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        // Lengkungan bawah header
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(25),
@@ -33,35 +36,30 @@ class ArtikelDetailPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
-            onPressed: () {
-              // Fitur share nanti
-            },
+            onPressed: () {},
           ),
         ],
       ),
 
-      // --- BODY ---
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. GAMBAR UTAMA (SUDAH DIPERBAIKI)
+            // 1. GAMBAR UTAMA (MENGGUNAKAN URL DARI API)
             Container(
               height: 250,
               width: double.infinity,
               margin: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.grey.shade200, // Warna cadangan jika gambar gagal muat
+                color: Colors.grey.shade200,
               ),
-              // Menggunakan ClipRRect agar sudut gambar melengkung
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  'assets/edukasi.jpeg', // Ganti dengan nama file gambar kamu
-                  fit: BoxFit.cover, // Agar gambar memenuhi area
+                child: Image.network(
+                  artikel.gambarUrl, // Menggunakan URL lengkap dari Laravel
+                  fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    // Jika gambar tidak ditemukan, tampilkan ikon placeholder
                     return const Center(
                       child: Icon(Icons.broken_image, size: 80, color: Colors.grey),
                     );
@@ -84,7 +82,6 @@ class ArtikelDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tanggal & Kategori
                   Row(
                     children: [
                       Container(
@@ -93,45 +90,56 @@ class ArtikelDetailPage extends StatelessWidget {
                           color: primaryDarkGreen.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Text(
-                          "Tips Budidaya",
-                          style: TextStyle(color: primaryDarkGreen, fontWeight: FontWeight.bold, fontSize: 12),
+                        child: Text(
+                          artikel.penulis,
+                          style: const TextStyle(color: primaryDarkGreen, fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                       ),
                       const SizedBox(width: 10),
-                      const Text(
-                        "12 Juni 2025",
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      Text(
+                        artikel.tanggal,
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                     ],
                   ),
                   const SizedBox(height: 15),
 
-                  // Judul Artikel
-                  const Text(
-                    "Manfaat Maggot BSF untuk Pakan Ternak",
-                    style: TextStyle(
+                  Text(
+                    artikel.judul,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: primaryDarkGreen,
                       height: 1.3,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  const Divider(),
 
-                  // Isi Artikel (Dummy Text)
-                  const Text(
-                    "Maggot BSF (Black Soldier Fly) kini semakin populer di kalangan peternak sebagai alternatif pakan yang kaya protein. Tidak hanya murah, maggot juga mudah dibudidayakan di rumah dengan memanfaatkan limbah organik.\n\n"
-                    "Kandungan protein pada maggot bisa mencapai 40-50%, yang sangat baik untuk pertumbuhan ayam, ikan, dan bebek. Selain itu, penggunaan maggot dapat menekan biaya pakan pabrikan yang semakin mahal.\n\n"
-                    "Cara budidaya maggot pun terbilang sederhana. Anda hanya perlu menyiapkan kandang lalat BSF, media penetasan telur, dan biopond untuk pembesaran larva. Makanannya pun gratis, cukup sisa sayuran atau buah busuk dari dapur Anda!",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      height: 1.6, // Jarak antar baris agar enak dibaca
-                    ),
-                    textAlign: TextAlign.justify,
+                  // 3. MENGGUNAKAN WIDGET HTML (AGAR KODE DIV/H4 TIDAK MUNCUL)
+                 Html(
+  data: artikel.konten,
+  style: {
+    "body": Style(
+      fontSize: FontSize(16.0),
+      textAlign: TextAlign.justify,
+      lineHeight: LineHeight.em(1.6),
+      // Gunakan .all(0) atau .zero sesuai yang tidak merah di editor Anda
+      margin: Margins.all(0), 
+      padding: HtmlPaddings.all(0),
+    ),
+    "h4": Style(
+      color: const Color(0xFF385E39),
+      fontWeight: FontWeight.bold,
+    ),
+  },
+),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Sumber: ${artikel.hakCipta}",
+                    style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.grey),
                   ),
-                  const SizedBox(height: 40), // Spasi bawah
+                  const SizedBox(height: 40),
                 ],
               ),
             ),

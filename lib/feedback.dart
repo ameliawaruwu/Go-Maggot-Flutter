@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'rating_star.dart';
-// Import file-file pendukung yang sudah kita buat tadi
+import 'package:image_picker/image_picker.dart';
+// import 'rating_star.dart'; // <-- Baris ini dihapus agar tidak konflik
 import '../models/review_model.dart';
 import '../services/feedback_service.dart';
 
@@ -12,78 +13,81 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  // State untuk menampung input user
   int _productQualityRating = 0;
   int _sellerServiceRating = 0;
-  int _deliverySpeedRating = 0;
   String _description = '';
   bool _showName = true;
-  bool _isLoading = false; // Untuk indikator loading
+  bool _isLoading = false;
 
-  final Color primaryColor = const Color.fromARGB(255, 55, 89, 53);
-  final Color cardColor = const Color(0xFFE4EDE1);
-  final Color textColor = Colors.white;
+  File? _imageFile;
+  File? _videoFile;
+  final ImagePicker _picker = ImagePicker();
 
-  // ==========================================================
-  // FUNGSI SUBMIT (SUDAH TERHUBUNG KE DATABASE)
-  // ==========================================================
+  // --- PALETTE WARNA ---
+  final Color appBarGreen = const Color(0xFF385E39);     // Hijau Tua
+  final Color bgGreenMatte = const Color(0xFFD4E2D4);    // Hijau Sage Matang
+  final Color buttonGreen = const Color(0xFF6E9E4F);     // Hijau Tombol
+  final Color starYellow = const Color(0xFFFFD700);      // Kuning Bintang
+  final Color cardWhite = Colors.white;                  
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) setState(() => _imageFile = File(pickedFile.path));
+  }
+
+  Future<void> _pickVideo() async {
+    final XFile? pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
+    if (pickedFile != null) setState(() => _videoFile = File(pickedFile.path));
+  }
+
   void _submitFeedback() async {
-    // 1. Validasi: Jangan biarkan komentar kosong
-    if (_description.trim().isEmpty) {
-      _showSnackBar('Tuliskan ulasan produk Anda terlebih dahulu!');
+    if (_description.trim().isEmpty || _productQualityRating == 0) {
+      _showSnackBar('Mohon lengkapi ulasan Anda.');
       return;
     }
-
-    // 2. Validasi: Pastikan bintang sudah diisi
-    if (_productQualityRating == 0 || _sellerServiceRating == 0) {
-      _showSnackBar('Mohon berikan rating bintang.');
-      return;
-    }
-
     setState(() => _isLoading = true);
-
-    // 3. Bungkus data ke dalam Model
-    // idProduk sementara kita hardcode "PR01" (sesuaikan dengan id di database kamu)
+    
     ReviewModel reviewBaru = ReviewModel(
-      idProduk: "PR01", 
+      idProduk: "PR01",
       ratingSeller: _sellerServiceRating,
       komentar: _description,
       kualitas: "Bintang $_productQualityRating",
       tampilkanUsername: _showName ? 1 : 0,
     );
 
-    // 4. Kirim melalui Service
-    bool sukses = await FeedbackService.kirimReview(reviewBaru);
-
+    bool sukses = await FeedbackService.kirimReview(reviewBaru, foto: _imageFile, video: _videoFile);
     setState(() => _isLoading = false);
 
     if (sukses) {
-      _showSnackBar('Ulasan produk berhasil dikirim! ❤️');
-      if (mounted) Navigator.pop(context); // Balik ke halaman sebelumnya
+      _showSnackBar('Ulasan berhasil dikirim!');
+      if (mounted) Navigator.pop(context); // Tambahkan check mounted
     } else {
-      _showSnackBar('Gagal mengirim ulasan. Cek Login atau Koneksi Anda.');
+      _showSnackBar('Gagal mengirim ulasan.');
     }
   }
 
   void _showSnackBar(String pesan) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(pesan)));
   }
 
-  // Widget untuk tombol unggah media (Visual saja untuk sekarang)
-  Widget _buildMediaUploadButton(IconData icon, String label) {
-    return Expanded(
-      child: Container(
-        height: 80,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        child: ElevatedButton(
-          onPressed: () => debugPrint('Memilih $label'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 0,
-          ),
-          child: Icon(icon, size: 40, color: primaryColor),
-        ),
+  Widget _buildInputCard({required String title, required Widget child}) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardWhite,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87)),
+          const SizedBox(height: 12),
+          child,
+        ],
       ),
     );
   }
@@ -91,89 +95,179 @@ class _FeedbackPageState extends State<FeedbackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: bgGreenMatte,
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: appBarGreen,
         elevation: 0,
+        centerTitle: false, 
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Nilai Produk',
-          style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+        titleSpacing: 0,
+        title: const Text(
+          'Nilai Produk', 
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)
         ),
-        actions: [
-          // Jika sedang loading, tampilkan spinner kecil
-          _isLoading 
-          ? const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
-            )
-          : TextButton(
-              onPressed: _submitFeedback,
-              child: Text('Submit', style: TextStyle(color: textColor, fontSize: 16)),
-            ),
-        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Kualitas Produk', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 10),
-            InteractiveRatingStars(onRatingChanged: (rating) => setState(() => _productQualityRating = rating)),
-            
-            const SizedBox(height: 20),
-            Text('Deskripsi:', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 10),
-            Container(
-              height: 200,
-              decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(10)),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  maxLines: null,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: 'Tuliskan ulasan produk Anda di sini...',
-                    hintStyle: TextStyle(color: Colors.black54),
-                  ),
-                  onChanged: (value) => _description = value,
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 20),
-            Text('Tambahkan gambar atau video:', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 10),
-            Row(children: [_buildMediaUploadButton(Icons.image_outlined, 'gambar'), _buildMediaUploadButton(Icons.video_library_outlined, 'video')]),
-            
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+            child: Column(
               children: [
-                Text('Tampilkan Nama', style: TextStyle(color: textColor, fontSize: 18)),
-                Switch(
-                  value: _showName,
-                  onChanged: (value) => setState(() => _showName = value),
-                  activeColor: cardColor,
+                _buildInputCard(
+                  title: "Bagaimana kualitas produk ini?",
+                  child: InteractiveRatingStars(
+                    color: starYellow, // Sekarang parameter ini valid
+                    onRatingChanged: (r) => setState(() => _productQualityRating = r)
+                  ),
+                ),
+
+                _buildInputCard(
+                  title: "Tuliskan ulasan Anda",
+                  child: TextField(
+                    maxLines: 4,
+                    onChanged: (v) => _description = v,
+                    decoration: const InputDecoration.collapsed(hintText: 'Ulasan jujur Anda sangat membantu kami...'),
+                  ),
+                ),
+
+                _buildInputCard(
+                  title: "Tambahkan Foto atau Video",
+                  child: Row(
+                    children: [
+                      _buildMediaBtn("Foto", _imageFile, Icons.camera_alt, _pickImage),
+                      const SizedBox(width: 15),
+                      _buildMediaBtn("Video", _videoFile, Icons.videocam, _pickVideo),
+                    ],
+                  ),
+                ),
+
+                _buildInputCard(
+                  title: "Pelayanan & Privasi",
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Tampilkan Nama", style: TextStyle(fontSize: 14)),
+                          Switch(
+                            value: _showName,
+                            onChanged: (v) => setState(() => _showName = v),
+                            activeColor: appBarGreen,
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      const SizedBox(height: 10),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Rating Pelayanan Penjual", style: TextStyle(fontSize: 13, color: Colors.grey)),
+                      ),
+                      const SizedBox(height: 10),
+                      InteractiveRatingStars(
+                        color: starYellow, // Parameter ini valid
+                        onRatingChanged: (r) => setState(() => _sellerServiceRating = r)
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            
-            const SizedBox(height: 20),
-            Text('Pelayanan Penjual', style: TextStyle(color: textColor, fontSize: 18)),
-            const SizedBox(height: 10),
-            InteractiveRatingStars(onRatingChanged: (rating) => setState(() => _sellerServiceRating = rating)),
-            
-            const SizedBox(height: 20),
-            Text('Kecepatan Pengiriman', style: TextStyle(color: textColor, fontSize: 18)),
-            const SizedBox(height: 10),
-            InteractiveRatingStars(onRatingChanged: (rating) => setState(() => _deliverySpeedRating = rating)),
-          ],
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -2))],
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _submitFeedback,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: buttonGreen,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  ),
+                  child: _isLoading 
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("KIRIM Ulasan", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMediaBtn(String label, File? file, IconData icon, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 90,
+          decoration: BoxDecoration(
+            color: bgGreenMatte.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(15),
+            image: file != null ? DecorationImage(image: FileImage(file), fit: BoxFit.cover) : null,
+          ),
+          child: file == null 
+            ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(icon, color: appBarGreen), Text(label, style: const TextStyle(fontSize: 11))])
+            : const Align(alignment: Alignment.topRight, child: Icon(Icons.check_circle, color: Colors.green, size: 20)),
         ),
       ),
+    );
+  }
+}
+
+// --- DEFINISI WIDGET BINTANG DI SINI ---
+// Ini akan menggantikan file rating_star.dart yang error
+class InteractiveRatingStars extends StatefulWidget {
+  final Color color;
+  final Function(int) onRatingChanged;
+
+  const InteractiveRatingStars({
+    Key? key,
+    required this.color, // Kita definisikan color di sini
+    required this.onRatingChanged,
+  }) : super(key: key);
+
+  @override
+  _InteractiveRatingStarsState createState() => _InteractiveRatingStarsState();
+}
+
+class _InteractiveRatingStarsState extends State<InteractiveRatingStars> {
+  int _currentRating = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _currentRating = index + 1;
+            });
+            widget.onRatingChanged(_currentRating);
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Icon(
+              index < _currentRating ? Icons.star : Icons.star_border,
+              color: widget.color, // Menggunakan warna dari parameter
+              size: 36,
+            ),
+          ),
+        );
+      }),
     );
   }
 }

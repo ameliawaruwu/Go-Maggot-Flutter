@@ -3,21 +3,66 @@ import 'bantuan.dart';
 import 'faq_page.dart';
 import 'favorit_page.dart';
 import 'voucher_page.dart';
+import 'utils/session_helper.dart';
 
-class ProfileContent extends StatelessWidget {
+// 🔥 TAMBAHAN (PESANAN)
+import 'pesanan_page.dart';
+
+class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
+
+  @override
+  State<ProfileContent> createState() => _ProfileContentState();
+}
+
+class _ProfileContentState extends State<ProfileContent> {
+  Map<String, String>? userData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final data = await SessionHelper.getUser();
+    if (mounted) {
+      setState(() {
+        userData = data;
+        isLoading = false;
+      });
+    }
+  }
+
+  void _handleLogout(BuildContext context) async {
+    await SessionHelper.logout();
+    if (context.mounted) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/login',
+        (route) => false,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Berhasil keluar, silakan login kembali."),
+          backgroundColor: Color(0xFF385E39),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final Color darkGreenBg = const Color(0xFF385E39);
     final Color lightGreenBtn = const Color(0xFF6C856C);
-    final Color whiteCard = Colors.white;
     final Color darkButton = const Color(0xFF1B3022);
 
     return Scaffold(
       backgroundColor: darkGreenBg,
 
-      // ================= APPBAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -28,10 +73,8 @@ class ProfileContent extends StatelessWidget {
         ),
       ),
 
-      // ================= BODY =================
       body: Column(
         children: [
-          // ---------- HEADER ----------
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: Column(
@@ -44,22 +87,29 @@ class ProfileContent extends StatelessWidget {
                       child: const Icon(Icons.person, size: 45, color: Colors.grey),
                     ),
                     const SizedBox(width: 20),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Riri",
-                            style: TextStyle(
+                            isLoading
+                                ? "Loading..."
+                                : (userData?['username'] ?? "-"),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Text(
-                            "riri@example.gmail.com",
-                            style: TextStyle(color: Colors.white70, fontSize: 12),
+                            isLoading
+                                ? ""
+                                : (userData?['email'] ?? "-"),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -67,18 +117,51 @@ class ProfileContent extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 25),
+
+                // ================= PESANAN (AKTIF) =================
                 Row(
                   children: [
-                    Expanded(child: _headerButton("Pesanan", lightGreenBtn)),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final token = await SessionHelper.getToken();
+                          if (token == null) return;
+
+                          if (!mounted) return;
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PesananPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: lightGreenBtn,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: const Text(
+                          "Pesanan",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: 15),
-                    Expanded(child: _headerButton("Ulasan", lightGreenBtn)),
+
+                    // ================= ULASAN (TETAP) =================
+                    Expanded(
+                      child: _headerButton("Ulasan", lightGreenBtn),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
 
-          // ---------- CARD PUTIH ----------
           Expanded(
             child: Container(
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 20),
@@ -88,25 +171,14 @@ class ProfileContent extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  _menuItem(
-                    context,
-                    icon: Icons.person_outline,
-                    text: "Akun Saya",
-                  ),
-
+                  _menuItem(context, icon: Icons.person_outline, text: "Akun Saya"),
                   _menuItem(
                     context,
                     icon: Icons.notifications_none,
                     text: "Notifikasi",
                     showDot: true,
                   ),
-
-                  _menuItem(
-                    context,
-                    icon: Icons.language,
-                    text: "Bahasa",
-                  ),
-
+                  _menuItem(context, icon: Icons.language, text: "Bahasa"),
                   _menuItem(
                     context,
                     icon: Icons.favorite_border,
@@ -116,7 +188,6 @@ class ProfileContent extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => FavoritPage()),
                     ),
                   ),
-
                   _menuItem(
                     context,
                     icon: Icons.card_giftcard,
@@ -127,7 +198,6 @@ class ProfileContent extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => const VoucherPage()),
                     ),
                   ),
-
                   _menuItem(
                     context,
                     icon: Icons.help_outline,
@@ -137,7 +207,6 @@ class ProfileContent extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => const BantuanPage()),
                     ),
                   ),
-
                   _menuItem(
                     context,
                     icon: Icons.question_answer_outlined,
@@ -150,7 +219,6 @@ class ProfileContent extends StatelessWidget {
 
                   const Spacer(),
 
-                  // ---------- LOGOUT ----------
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -161,13 +229,7 @@ class ProfileContent extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          '/',
-                          (route) => false,
-                        );
-                      },
+                      onPressed: () => _handleLogout(context),
                       child: const Text(
                         "KELUAR",
                         style: TextStyle(
@@ -186,7 +248,6 @@ class ProfileContent extends StatelessWidget {
     );
   }
 
-  // ================= HEADER BUTTON =================
   static Widget _headerButton(String text, Color color) {
     return ElevatedButton(
       onPressed: () {},
@@ -202,7 +263,6 @@ class ProfileContent extends StatelessWidget {
     );
   }
 
-  // ================= MENU ITEM =================
   static Widget _menuItem(
     BuildContext context, {
     required IconData icon,
@@ -240,7 +300,6 @@ class ProfileContent extends StatelessWidget {
     );
   }
 
-  // ================= ICON + BADGE =================
   static Widget _iconWithBadge(
     IconData icon, {
     bool showDot = false,
@@ -258,7 +317,6 @@ class ProfileContent extends StatelessWidget {
           ),
           child: Icon(icon, color: const Color(0xFF385E39), size: 20),
         ),
-
         if (showDot)
           Positioned(
             top: -2,
@@ -272,7 +330,6 @@ class ProfileContent extends StatelessWidget {
               ),
             ),
           ),
-
         if (label != null)
           Positioned(
             top: -10,

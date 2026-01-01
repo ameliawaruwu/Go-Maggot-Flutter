@@ -62,6 +62,7 @@ class ProdukModel {
     );
   }
   
+  // PERBAIKAN DI SINI: Semua field wajib masuk agar data tidak hilang saat reload keranjang
   Map<String, dynamic> toJson() {
     return {
       'id_produk': idProduk,
