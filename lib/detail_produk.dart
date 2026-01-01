@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'keranjang.dart'; 
 import 'chat_produk.dart';
 // import 'checkout_page.dart'; // Di-komen sementara agar tidak error saat testing
-import 'feedback.dart'; 
-// IMPORT MODEL YANG BENAR
+
 import 'models/product_model.dart'; 
 import 'cart_helper.dart'; 
 
@@ -126,24 +125,7 @@ class ProductDetailPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        // TESTING: Memanggil FeedbackPage polosan agar tidak error parameter
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const FeedbackPage(), 
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.rate_review_outlined, color: primaryDarkGreen),
-                      label: const Text("Beri Ulasan Produk (Test)", style: TextStyle(color: primaryDarkGreen, fontWeight: FontWeight.bold)),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: primaryDarkGreen),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
+                   
                   ),
                 ],
               ),

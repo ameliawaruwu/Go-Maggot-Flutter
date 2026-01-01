@@ -4,7 +4,7 @@ import '../models/artikel_model.dart';
 
 class ArtikelService {
   // Gunakan 10.0.2.2 untuk akses localhost laptop dari emulator Android
-  static const String baseUrl = "http://10.0.2.2:8000/api";
+  static const String baseUrl = "http://10.121.188.89:8000/api";
 
   Future<List<ArtikelModel>> fetchArtikels() async {
     try {

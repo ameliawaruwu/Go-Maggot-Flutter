@@ -7,7 +7,7 @@ import '../models/login_result.dart';
 import '../utils/session_helper.dart'; // Tambahkan import
 
 class AuthService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api'; // Gunakan IP yang sama
+  static const String baseUrl = 'http://10.121.188.89:8000/api'; // Gunakan IP yang sama
 
   static Future<LoginResult> login(
     String email,

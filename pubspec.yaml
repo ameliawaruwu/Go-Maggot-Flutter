@@ -36,6 +36,7 @@ dependencies:
   image_picker: ^1.0.7
   # Ubah versi ini menjadi alpha agar kompatibel dengan Flutter 3.x
   flutter_html: ^3.0.0-alpha.6
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
