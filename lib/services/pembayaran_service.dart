@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PembayaranService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api';
+  static const String baseUrl = 'http://10.121.188.89:8000/api';
 
   Future<bool> uploadBuktiBayar(String orderId, File imageFile) async {
     final prefs = await SharedPreferences.getInstance();
