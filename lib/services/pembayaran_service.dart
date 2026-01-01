@@ -5,7 +5,7 @@ import '../utils/session_helper.dart';
 import 'dart:async'; 
 
 class PembayaranService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api';
+  static const String baseUrl = 'http://10.121.188.89:8000/api';
 
   Future<bool> uploadBuktiBayar(String orderId, File imageFile) async {
     try {

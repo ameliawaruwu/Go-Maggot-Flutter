@@ -11,7 +11,7 @@ class PesananService {
   Future<List<Pesanan>> fetchPesanan(String token) async {
     try {
       final response = await http.get(
-        Uri.parse(ApiConfig.myOrders),
+        Uri.parse(ApiConfig.orderStatus),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
